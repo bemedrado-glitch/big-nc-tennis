@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Big NC Tennis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,300..800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="data.js"></script>
+<style>
+:root{--bg:#000;--s1:#0d0d0d;--s2:#161616;--s3:#222;--s4:#2a2a2a;--b:rgba(255,255,255,.07);--bm:rgba(255,255,255,.13);--a:#C9E70A;--ah:#D8F520;--ad:rgba(201,231,10,.12);--at:#000;--t1:#fff;--t2:#999;--t3:#444;--green:#34C759;--orange:#FF9F0A;--red:#FF3B30;--blue:#0A84FF}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+::-webkit-scrollbar{width:3px}::-webkit-scrollbar-thumb{background:var(--s3);border-radius:2px}
+input,textarea,select{font-family:inherit;color:var(--t1);background:none;outline:none;border:none}
+input[type=file]{display:none}
+#app{max-width:480px;margin:0 auto;position:relative;min-height:100vh}
+.screen{display:none;min-height:100vh;animation:fi .22s ease}
+.screen.active{display:block}
+.page{padding:20px;padding-bottom:110px}
+@keyframes fi{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+/* TYPOGRAPHY */
+.hero{font-family:'Bebas Neue',sans-serif;font-size:clamp(52px,14vw,84px);letter-spacing:2px;line-height:.9}
+.t-xl{font-family:'Bebas Neue',sans-serif;font-size:clamp(26px,7vw,40px);letter-spacing:1px;line-height:1}
+.t-lg{font-size:20px;font-weight:700;letter-spacing:-.4px}
+.t-md{font-size:16px;font-weight:600;letter-spacing:-.3px}
+.t-sm{font-size:13px}.t-xs{font-size:11px;text-transform:uppercase;letter-spacing:.8px;font-weight:600}
+.t2{color:var(--t2)}.accent{color:var(--a)}
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:0 22px;height:52px;border-radius:100px;font-size:15px;font-weight:700;cursor:pointer;border:none;transition:all .18s;white-space:nowrap;font-family:inherit;letter-spacing:-.2px}
+.bp{background:var(--a);color:var(--at)}.bp:hover{background:var(--ah)}.bp:active{transform:scale(.97)}
+.bg{background:var(--s3);color:var(--t1);border:none}.bg:hover{background:var(--s4)}
+.bo{background:transparent;color:var(--t1);border:1.5px solid var(--bm)}.bo:hover{border-color:var(--a);color:var(--a)}
+.bd{background:rgba(255,59,48,.12);color:var(--red);border:none}.bd:hover{background:rgba(255,59,48,.22)}
+.bsm{height:38px;padding:0 14px;font-size:12px}.bfw{width:100%}.bic{width:44px;height:44px;padding:0;border-radius:12px;background:var(--s3);border:none;color:var(--t1);display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+/* CARDS */
+.card{background:var(--s1);border:1px solid var(--b);border-radius:22px;padding:20px;transition:border-color .2s}
+.card-sm{background:var(--s2);border:1px solid var(--b);border-radius:16px;padding:16px}
+/* FIELDS */
+.field{margin-bottom:14px}
+.field label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--t2);margin-bottom:7px}
+.fi{width:100%;background:var(--s2);border:1.5px solid var(--b);border-radius:12px;padding:13px 16px;color:var(--t1);font-size:14px;font-family:inherit;transition:border-color .2s}
+.fi:focus{border-color:var(--a)}.fi::placeholder{color:var(--t3)}.fi option{background:#1a1a1a}
+textarea.fi{resize:vertical;min-height:88px;line-height:1.5}
+/* NAV */
+.bnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:rgba(0,0,0,.92);backdrop-filter:blur(20px);border-top:1px solid var(--b);display:flex;align-items:center;padding:8px 8px calc(8px + env(safe-area-inset-bottom,0px));gap:2px;z-index:100}
+.ni{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 4px;border-radius:12px;cursor:pointer;color:var(--t3);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;background:none;border:none;font-family:inherit;transition:color .15s}
+.ni svg{width:20px;height:20px;fill:none;stroke:var(--t3);stroke-width:2;transition:stroke .15s}
+.ni.active{color:var(--a)}.ni.active svg{stroke:var(--a)}
+/* TOPBAR */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 20px 12px;position:sticky;top:0;z-index:50;background:rgba(0,0,0,.88);backdrop-filter:blur(16px)}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;color:var(--a)}
+.av-sm{width:36px;height:36px;border-radius:50%;object-fit:cover;background:var(--s3);border:2px solid var(--s3);cursor:pointer}
+/* PILLS */
+.pill{display:inline-flex;align-items:center;padding:4px 11px;border-radius:100px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px}
+.pa{background:var(--ad);color:var(--a)}.pg{background:rgba(52,199,89,.12);color:var(--green)}.po{background:rgba(255,159,10,.12);color:var(--orange)}.pr{background:rgba(255,59,48,.12);color:var(--red)}.pb{background:rgba(10,132,255,.12);color:var(--blue)}.py{background:var(--s3);color:var(--t2)}
+/* CALENDAR */
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-top:10px}
+.cdl{text-align:center;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--t3);padding:4px 0}
+.cd{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:9px;font-size:13px;font-weight:500;cursor:pointer;transition:all .12s;position:relative;background:transparent;border:none;color:var(--t2);font-family:inherit}
+.cd:hover:not(.ce):not(.dis){background:var(--s3);color:var(--t1)}
+.cd.today{color:var(--a);font-weight:800}.cd.sel{background:var(--a);color:var(--at);font-weight:800}
+.cd.dot::after{content:'';position:absolute;bottom:3px;left:50%;transform:translateX(-50%);width:3px;height:3px;border-radius:50%;background:var(--a)}
+.cd.sel.dot::after{background:var(--at)}.cd.dis{color:var(--t3);cursor:not-allowed;opacity:.35}.cd.ce{cursor:default}
+.cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+/* TIME SLOTS */
+.tgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:10px}
+.ts{padding:11px 6px;border-radius:10px;border:1.5px solid var(--b);text-align:center;font-size:12px;font-weight:700;cursor:pointer;transition:all .12s;background:var(--s2);color:var(--t2);font-family:inherit}
+.ts:hover:not(.taken){border-color:var(--a);color:var(--a)}.ts.sel{background:var(--a);color:var(--at);border-color:var(--a)}
+.ts.taken{opacity:.28;cursor:not-allowed}.ts.taken::after{content:'✕';font-size:9px;display:block;color:var(--red);margin-top:2px}
+/* SKILL BARS */
+.skill-bars{display:flex;flex-direction:column;gap:10px}
+.skill-row{display:flex;align-items:center;gap:10px}
+.skill-name{font-size:11px;font-weight:700;color:var(--t2);width:78px;flex-shrink:0;text-transform:uppercase;letter-spacing:.3px}
+.skill-bar-bg{flex:1;height:5px;background:var(--s3);border-radius:3px;overflow:hidden}
+.skill-bar-fill{height:100%;border-radius:3px;background:var(--a);transition:width .9s cubic-bezier(.4,0,.2,1)}
+/* SESSION CARDS */
+.sc{background:var(--s2);border:1px solid var(--b);border-radius:22px;padding:18px;display:flex;gap:14px;align-items:flex-start;transition:all .18s;cursor:pointer}
+.sc:hover{border-color:var(--bm);transform:translateY(-1px)}
+.sdb{background:var(--s3);border-radius:12px;width:50px;height:58px;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0}
+.sdb .mon{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--t2)}
+.sdb .day{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--a);line-height:1}
+/* COACH PICK */
+.cp{background:var(--s2);border:1.5px solid var(--b);border-radius:22px;padding:15px;display:flex;gap:12px;align-items:center;cursor:pointer;transition:all .18s}
+.cp:hover,.cp.sel{border-color:var(--a)}.cp.sel{background:rgba(201,231,10,.06)}
+.cav{width:48px;height:48px;border-radius:50%;object-fit:cover;background:var(--s3);flex-shrink:0}
+/* NOTES */
+.note-card{background:var(--s2);border-left:3px solid var(--a);border-radius:0 16px 16px 0;padding:15px 15px 15px 18px}
+/* MESSAGES */
+.mb{max-width:78%;padding:12px 16px;border-radius:18px;font-size:14px;line-height:1.5}
+.mme{align-self:flex-end;background:var(--a);color:var(--at);border-bottom-right-radius:4px}
+.mth{align-self:flex-start;background:var(--s3);color:var(--t1);border-bottom-left-radius:4px}
+/* TOGGLE */
+.toggle{width:48px;height:28px;border-radius:100px;background:var(--s3);position:relative;cursor:pointer;transition:background .2s;flex-shrink:0;border:none}
+.toggle.on{background:var(--a)}
+.toggle::after{content:'';position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 1px 4px rgba(0,0,0,.3)}
+.toggle.on::after{transform:translateX(20px)}
+/* AVAIL */
+.ar{display:flex;align-items:center;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--b)}
+.ar:last-child{border-bottom:none}
+/* MODAL */
+.mo{position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:200;display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(4px)}
+.mo.active{display:flex}
+.ms{background:var(--s1);border-radius:26px 26px 0 0;width:100%;max-width:480px;max-height:92vh;overflow-y:auto;padding:24px 20px calc(24px + env(safe-area-inset-bottom,0px));animation:su .28s cubic-bezier(.34,1.2,.64,1)}
+@keyframes su{from{transform:translateY(100%)}to{transform:none}}
+.mh{width:36px;height:4px;border-radius:2px;background:var(--s3);margin:0 auto 20px}
+/* EMAIL MODAL */
+.etabs{display:flex;gap:4px;margin-bottom:16px;background:var(--s2);border-radius:12px;padding:4px}
+.etab{flex:1;padding:8px;border-radius:9px;font-size:11px;font-weight:700;text-align:center;cursor:pointer;transition:all .15s;color:var(--t2);border:none;font-family:inherit;background:none}
+.etab.active{background:var(--a);color:var(--at)}
+.epanel{display:none}.epanel.active{display:block}
+.edt{background:var(--s2);border:1px solid var(--b);border-radius:12px;padding:14px;font-size:13px;line-height:1.7;color:var(--t2);white-space:pre-wrap;max-height:260px;overflow-y:auto;font-family:inherit;word-break:break-word}
+.ebtn{display:flex;align-items:center;gap:14px;background:var(--s2);border:1.5px solid var(--b);border-radius:14px;padding:15px;cursor:pointer;transition:border-color .18s;width:100%;margin-bottom:10px;font-family:inherit}
+.ebtn:hover{border-color:var(--a)}
+.ebtn .ico{width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:20px}
+.ebtn .et{font-size:14px;font-weight:700;color:var(--t1)}.ebtn .es{font-size:12px;color:var(--t2);margin-top:2px}
+/* AVATAR RING */
+.avr{width:90px;height:90px;border-radius:50%;border:2px dashed var(--bm);display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;overflow:hidden;transition:border-color .2s}
+.avr:hover{border-color:var(--a)}.avr img{width:100%;height:100%;object-fit:cover}
+.avo{position:absolute;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s}
+.avr:hover .avo{opacity:1}
+/* DRILL CARD */
+.dc{background:var(--s2);border:1px solid var(--b);border-radius:16px;padding:14px;display:flex;gap:12px;align-items:center;transition:border-color .18s}
+.dc:hover{border-color:var(--bm)}
+.dt{width:62px;height:46px;border-radius:8px;background:var(--s3);flex-shrink:0;overflow:hidden;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.dt img{width:100%;height:100%;object-fit:cover}
+/* LOADER / TOAST */
+#loader{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;transition:opacity .4s}
+#loader.hidden{opacity:0;pointer-events:none}
+.ll{font-family:'Bebas Neue',sans-serif;font-size:40px;letter-spacing:4px;color:var(--a)}
+.spin{width:22px;height:22px;border:2.5px solid var(--s3);border-top-color:var(--a);border-radius:50%;animation:sp .7s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+#toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-80px);background:var(--s3);color:var(--t1);padding:12px 22px;border-radius:100px;font-size:14px;font-weight:600;z-index:999;transition:transform .3s cubic-bezier(.34,1.56,.64,1);white-space:nowrap;border:1px solid var(--bm);pointer-events:none}
+#toast.show{transform:translateX(-50%) translateY(0)}
+#toast.success{background:rgba(52,199,89,.15);color:var(--green);border-color:rgba(52,199,89,.3)}
+#toast.error{background:rgba(255,59,48,.15);color:var(--red);border-color:rgba(255,59,48,.3)}
+/* UTILS */
+.fx{display:flex}.aic{align-items:center}.jb{justify-content:space-between}.g8{gap:8px}.g12{gap:12px}
+.mt8{margin-top:8px}.mt12{margin-top:12px}.mt16{margin-top:16px}.mt20{margin-top:20px}.mt24{margin-top:24px}
+.mb8{margin-bottom:8px}.mb12{margin-bottom:12px}.mb16{margin-bottom:16px}
+.fw{width:100%}.tc{text-align:center}
+.shd{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+hr.line{border:none;border-top:1px solid var(--b);margin:18px 0}
+.es{text-align:center;padding:28px 20px;color:var(--t2)}
+.badge{display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;border-radius:9px;background:var(--red);color:#fff;font-size:10px;font-weight:700;padding:0 5px}
+.splash-ball{width:220px;height:220px;border-radius:50%;background:radial-gradient(circle at 35% 35%,var(--a),#5a6e00);position:fixed;top:-60px;right:-60px;opacity:.11;filter:blur(50px);pointer-events:none}
+</style>
+</head>
+<body>
+<div id="loader"><div class="ll">BIG NC</div><div class="spin"></div></div>
+<div id="toast"></div>
+<div class="mo" id="MO" onclick="closeModal()"><div class="ms" id="MS" onclick="event.stopPropagation()"><div class="mh"></div><div id="MB"></div></div></div>
+<div id="app">
+
+<!-- SPLASH -->
+<div id="screen-splash" class="screen active">
+  <div class="splash-ball"></div>
+  <div style="padding:48px 32px;display:flex;flex-direction:column;justify-content:space-between;min-height:100vh">
+    <div>
+      <div class="t-xs t2" style="letter-spacing:3px;margin-bottom:18px">Welcome to</div>
+      <div class="hero">BIG<br><span class="accent">NC</span><br>TENNIS</div>
+      <div style="margin-top:20px;font-size:16px;color:var(--t2);line-height:1.6">The court is yours.<br>Book, train, track your game.</div>
+      <div style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap">
+        <span class="pill pa">8 Elite Coaches</span>
+        <span class="pill pg">Live Scheduling</span>
+        <span class="pill pb">Progress Tracking</span>
+      </div>
+    </div>
+    <div>
+      <button class="btn bp bfw" style="height:56px;font-size:16px;margin-bottom:10px" onclick="showScreen('screen-login')">Sign In →</button>
+      <button class="btn bo bfw" style="height:56px;font-size:16px" onclick="showScreen('screen-register')">Create Account</button>
+      <p class="t-sm t2 tc mt16">By continuing you agree to our <span class="accent" style="cursor:pointer">Terms</span> &amp; <span class="accent" style="cursor:pointer">Privacy</span></p>
+    </div>
+  </div>
+</div>
+
+<!-- LOGIN -->
+<div id="screen-login" class="screen">
+  <div style="padding:24px 24px 0;display:flex;align-items:center;gap:12px">
+    <button class="bic" onclick="showScreen('screen-splash')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <div class="t-xs t2">Big NC Tennis</div>
+  </div>
+  <div class="page" style="padding-top:24px;padding-bottom:40px">
+    <div class="t-xl" style="margin-bottom:6px">Welcome<br><span class="accent">Back</span></div>
+    <p class="t-sm t2 mb16" style="margin-bottom:26px">Sign in to your account</p>
+    <div class="field"><label>Email</label><input id="li-em" type="email" class="fi" placeholder="you@example.com"></div>
+    <div class="field"><label>Password</label><input id="li-pw" type="password" class="fi" placeholder="••••••••"></div>
+    <button class="btn bp bfw mt16" style="height:56px;font-size:16px;margin-top:20px" onclick="doLogin()">Sign In →</button>
+    <p class="t-sm t2 tc mt16">No account? <span class="accent" style="cursor:pointer;font-weight:700" onclick="showScreen('screen-register')">Sign Up</span></p>
+    <div style="margin-top:28px;padding:16px;background:var(--s2);border-radius:14px;border:1px solid var(--b)">
+      <p class="t-xs t2" style="margin-bottom:10px">⚡ DEMO LOGINS</p>
+      <p class="t-sm" style="margin-bottom:6px">Student: <span class="accent">student@demo.com</span> / demo1234</p>
+      <p class="t-sm">Coach: <span class="accent">coach@demo.com</span> / demo1234</p>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <button class="btn bg bsm" onclick="fillDemo('student')">Fill Student</button>
+        <button class="btn bg bsm" onclick="fillDemo('coach')">Fill Coach</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- REGISTER -->
+<div id="screen-register" class="screen">
+  <div style="padding:24px 24px 0;display:flex;align-items:center;gap:12px">
+    <button class="bic" onclick="showScreen('screen-splash')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <div class="t-xs t2">Create Account</div>
+  </div>
+  <div class="page" style="padding-top:24px;padding-bottom:40px">
+    <div class="t-xl" style="margin-bottom:6px">Join<br><span class="accent">The Team</span></div>
+    <p class="t-sm t2" style="margin-bottom:26px">Create your Big NC Tennis profile</p>
+    <div style="display:flex;gap:10px">
+      <div class="field" style="flex:1"><label>First Name</label><input id="rg-fn" type="text" class="fi" placeholder="Alex"></div>
+      <div class="field" style="flex:1"><label>Last Name</label><input id="rg-ln" type="text" class="fi" placeholder="Rivera"></div>
+    </div>
+    <div style="display:flex;gap:10px">
+      <div class="field" style="flex:1"><label>Age</label><input id="rg-age" type="number" class="fi" placeholder="25" min="5" max="99"></div>
+      <div class="field" style="flex:1"><label>Gender</label>
+        <select id="rg-gen" class="fi"><option value="male">Male</option><option value="female">Female</option><option value="neutral">Prefer not to say</option></select>
+      </div>
+    </div>
+    <div class="field"><label>Email</label><input id="rg-em" type="email" class="fi" placeholder="you@example.com"></div>
+    <div class="field"><label>Password</label><input id="rg-pw" type="password" class="fi" placeholder="Min 8 characters"></div>
+    <div class="field"><label>I am a...</label>
+      <select id="rg-role" class="fi"><option value="student">Student / Player</option><option value="coach">Coach</option></select>
+    </div>
+    <button class="btn bp bfw" style="height:56px;font-size:16px;margin-top:20px" onclick="doRegister()">Create Account →</button>
+    <p class="t-sm t2 tc mt16">Have an account? <span class="accent" style="cursor:pointer;font-weight:700" onclick="showScreen('screen-login')">Sign In</span></p>
+  </div>
+</div>
+
+<!-- PROFILE SETUP -->
+<div id="screen-profile-setup" class="screen">
+  <div class="page" style="padding-top:32px;padding-bottom:40px">
+    <div class="t-xs t2 mb8">Profile Setup</div>
+    <div class="t-xl" style="margin-bottom:6px">Your<br><span class="accent">Profile</span></div>
+    <p class="t-sm t2" style="margin-bottom:22px">Tell us about your game</p>
+    <div style="display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:22px">
+      <div class="avr" id="avr" onclick="document.getElementById('av-inp').click()">
+        <img id="av-pre" src="" style="display:none">
+        <svg id="av-ico" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--t3)" stroke-width="1.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <div class="avo"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+      </div>
+      <input type="file" id="av-inp" accept="image/*" onchange="previewAvatar(this)">
+      <span class="t-sm t2">Tap to upload photo</span>
+    </div>
+    <div id="sf">
+      <div class="field"><label>Skill Level</label>
+        <select id="p-lvl" class="fi"><option value="beginner">Beginner (0–2.5)</option><option value="intermediate">Intermediate (3.0–3.5)</option><option value="advanced">Advanced (4.0–4.5)</option><option value="elite">Elite (5.0+)</option></select>
+      </div>
+      <div class="field"><label>Playing Style</label>
+        <select id="p-sty" class="fi"><option value="baseline">Baseline Grinder</option><option value="aggressive">Aggressive Baseliner</option><option value="serve-volley">Serve &amp; Volley</option><option value="allcourt">All-Court</option><option value="defensive">Counter-Puncher</option></select>
+      </div>
+      <div class="field"><label>Main Areas to Improve (hold Ctrl for multiple)</label>
+        <select id="p-foc" class="fi" multiple style="height:108px">
+          <option value="serve">Serve</option><option value="forehand">Forehand</option><option value="backhand">Backhand</option>
+          <option value="volley">Net &amp; Volley</option><option value="footwork">Footwork</option>
+          <option value="mental">Mental Game</option><option value="return">Return of Serve</option><option value="tactic">Tactics &amp; Strategy</option>
+        </select>
+      </div>
+      <div class="field"><label>About Your Game</label><textarea id="p-bio" class="fi" placeholder="Tell your coach about your tennis journey…"></textarea></div>
+    </div>
+    <div id="cf" style="display:none">
+      <div class="field"><label>Specialty</label>
+        <select id="c-spe" class="fi">
+          <option>Junior Development</option><option>Adult Recreational</option><option>Competitive / Tournament</option>
+          <option>Fitness &amp; Conditioning</option><option>All Levels</option><option>Serve &amp; Technique</option><option>Mental Game &amp; Tactics</option>
+        </select>
+      </div>
+      <div class="field"><label>Years Coaching</label><input id="c-yrs" type="number" class="fi" placeholder="e.g. 5"></div>
+      <div class="field"><label>Certifications</label><input id="c-cer" type="text" class="fi" placeholder="e.g. USPTA Pro, PTR Level 3"></div>
+      <div class="field"><label>Coaching Philosophy</label><textarea id="c-bio" class="fi" placeholder="Describe your approach…"></textarea></div>
+    </div>
+    <button class="btn bp bfw" style="height:56px;font-size:16px;margin-top:20px" onclick="saveProfile()">Enter The Court →</button>
+  </div>
+</div>
+
+<!-- STUDENT APP -->
+<div id="screen-student" class="screen">
+  <div class="topbar">
+    <div class="logo">BIG NC</div>
+    <div class="fx aic g8">
+      <button class="bic" style="background:none;position:relative" onclick="showSTab('messages')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--t2)" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <div class="badge" id="s-mbd" style="position:absolute;top:-2px;right:-2px;display:none">!</div>
+      </button>
+      <img class="av-sm" id="s-av" src="" onclick="showSTab('profile')">
+    </div>
+  </div>
+  <!-- HOME -->
+  <div id="s-home" class="page">
+    <div style="margin-bottom:20px"><p class="t-sm t2">Good <span id="s-greet">day</span>,</p><div class="t-lg" id="s-name">Player</div></div>
+    <div class="shd"><span class="t-xs t2">Next Session</span></div>
+    <div id="s-next-sess"><div class="es"><p>No upcoming sessions. <span class="accent" style="cursor:pointer" onclick="showSTab('book')">Book one →</span></p></div></div>
+    <div class="mt24">
+      <div class="shd"><span class="t-xs t2">My Progress</span><span class="t-xs accent" style="cursor:pointer" onclick="showSTab('progress')">All →</span></div>
+      <div class="card"><div class="skill-bars" id="s-skill-bars"><div class="t-sm t2 tc" style="padding:8px">Complete a session to see skills</div></div></div>
+    </div>
+    <div class="mt24">
+      <div class="shd"><span class="t-xs t2">Assigned Drills</span><span class="t-xs accent" style="cursor:pointer" onclick="showSTab('drills')">Library →</span></div>
+      <div id="s-drills-home" style="display:flex;flex-direction:column;gap:8px"></div>
+    </div>
+  </div>
+  <!-- BOOK -->
+  <div id="s-book" class="page" style="display:none">
+    <div class="t-xl mb16" style="margin-bottom:18px">Book a<br><span class="accent">Session</span></div>
+    <div class="shd"><span class="t-xs t2">Session Type</span></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;margin-bottom:18px" id="stg">
+      <div class="card-sm stb" data-type="Private 1-on-1" onclick="selType(this)" style="cursor:pointer;text-align:center"><div style="font-size:22px;margin-bottom:5px">🎾</div><div class="t-sm" style="font-weight:700">Private 1-on-1</div></div>
+      <div class="card-sm stb" data-type="Group Lesson" onclick="selType(this)" style="cursor:pointer;text-align:center"><div style="font-size:22px;margin-bottom:5px">👥</div><div class="t-sm" style="font-weight:700">Group Lesson</div></div>
+      <div class="card-sm stb" data-type="Clinic / Camp" onclick="selType(this)" style="cursor:pointer;text-align:center"><div style="font-size:22px;margin-bottom:5px">🏕️</div><div class="t-sm" style="font-weight:700">Clinic / Camp</div></div>
+      <div class="card-sm stb" data-type="Match Play" onclick="selType(this)" style="cursor:pointer;text-align:center"><div style="font-size:22px;margin-bottom:5px">🏆</div><div class="t-sm" style="font-weight:700">Match Play</div></div>
+    </div>
+    <div class="shd"><span class="t-xs t2">Select Date</span></div>
+    <div class="card" style="margin-top:8px">
+      <div class="cal-nav">
+        <button class="bic" style="width:38px;height:38px;border-radius:10px" onclick="prevMonth()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+        <span class="t-md" id="cal-lbl"></span>
+        <button class="bic" style="width:38px;height:38px;border-radius:10px" onclick="nextMonth()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg></button>
+      </div>
+      <div class="cal-grid" id="cal-grid"></div>
+    </div>
+    <div class="mt20" id="coaches-wrap" style="display:none">
+      <div class="shd"><span class="t-xs t2">Available Coaches</span><span id="coaches-dlbl" class="t-xs t2"></span></div>
+      <div id="coach-list" style="display:flex;flex-direction:column;gap:8px;margin-top:8px"></div>
+    </div>
+    <div class="mt20" id="times-wrap" style="display:none">
+      <div class="shd"><span class="t-xs t2">Select Time</span><span id="times-info" class="t-xs t2"></span></div>
+      <div class="tgrid" id="time-grid"></div>
+    </div>
+    <div class="mt20" id="notes-wrap" style="display:none">
+      <div class="field"><label>Session Objective</label><textarea id="bk-obj" class="fi" placeholder="What do you want to focus on? (e.g. improve topspin forehand…)"></textarea></div>
+      <div class="field"><label>Notes for Coach</label><textarea id="bk-notes" class="fi" placeholder="Anything else the coach should know…"></textarea></div>
+      <button class="btn bp bfw" style="height:52px" onclick="confirmBooking()">Confirm Booking →</button>
+    </div>
+  </div>
+  <!-- SESSIONS -->
+  <div id="s-sessions" class="page" style="display:none">
+    <div class="t-xl mb16">My<br><span class="accent">Sessions</span></div>
+    <div style="display:flex;gap:6px;margin-bottom:16px">
+      <button class="btn bg bsm" id="sf-up" onclick="filtSess('upcoming',this)" style="background:var(--a);color:var(--at)">Upcoming</button>
+      <button class="btn bg bsm" id="sf-pa" onclick="filtSess('past',this)">Past</button>
+    </div>
+    <div id="s-sess-list" style="display:flex;flex-direction:column;gap:10px"></div>
+  </div>
+  <!-- PROGRESS -->
+  <div id="s-progress" class="page" style="display:none">
+    <div class="t-xl mb16">My<br><span class="accent">Progress</span></div>
+    <div class="card mb16"><div class="t-xs t2 mb12">Skill Assessment</div><div class="skill-bars" id="s-prog-bars"></div></div>
+    <div class="shd"><span class="t-xs t2">Coach Feedback</span></div>
+    <div id="s-fb-list" style="display:flex;flex-direction:column;gap:10px;margin-top:10px"></div>
+  </div>
+  <!-- DRILLS -->
+  <div id="s-drills" class="page" style="display:none">
+    <div class="t-xl mb16">Drill<br><span class="accent">Library</span></div>
+    <div style="display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;margin-bottom:12px;scrollbar-width:none" id="drill-filters"></div>
+    <div id="drill-list" style="display:flex;flex-direction:column;gap:8px"></div>
+  </div>
+  <!-- MESSAGES -->
+  <div id="s-messages" class="page" style="display:none;padding-bottom:160px">
+    <div class="t-xl mb16">Messages</div>
+    <div id="s-conv-list" style="display:flex;flex-direction:column;gap:8px"></div>
+  </div>
+  <!-- PROFILE -->
+  <div id="s-profile" class="page" style="display:none">
+    <div class="t-xl mb16">My<br><span class="accent">Profile</span></div>
+    <div class="card" style="text-align:center;margin-bottom:16px">
+      <img id="s-pav" src="" style="width:76px;height:76px;border-radius:50%;object-fit:cover;margin:0 auto 12px;display:block">
+      <div class="t-lg" id="s-pname"></div>
+      <div class="t-sm t2 mt8" id="s-plvl"></div>
+    </div>
+    <div class="card mb16" id="s-pdet"></div>
+    <button class="btn bo bfw" onclick="editProfile()">Edit Profile</button>
+    <button class="btn bd bfw" style="margin-top:10px" onclick="signOut()">Sign Out</button>
+  </div>
+  <nav class="bnav">
+    <button class="ni active" id="s-n-home" onclick="showSTab('home')"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home</button>
+    <button class="ni" id="s-n-book" onclick="showSTab('book')"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Book</button>
+    <button class="ni" id="s-n-sessions" onclick="showSTab('sessions')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Sessions</button>
+    <button class="ni" id="s-n-drills" onclick="showSTab('drills')"><svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>Drills</button>
+    <button class="ni" id="s-n-messages" onclick="showSTab('messages')"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Messages</button>
+  </nav>
+</div>
+
+<!-- COACH APP -->
+<div id="screen-coach" class="screen">
+  <div class="topbar">
+    <div class="logo">BIG NC</div>
+    <div class="fx aic g8">
+      <button class="bic" style="background:none;position:relative" onclick="showCTab('messages')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--t2)" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <div class="badge" id="c-mbd" style="position:absolute;top:-2px;right:-2px;display:none">!</div>
+      </button>
+      <img class="av-sm" id="c-av" src="" onclick="showCTab('profile')">
+    </div>
+  </div>
+  <div id="c-home" class="page">
+    <div style="margin-bottom:20px"><p class="t-sm t2">Coach Dashboard,</p><div class="t-lg" id="c-name">Coach</div></div>
+    <div class="shd"><span class="t-xs t2">Today's Sessions</span><span class="t-xs t2" id="c-tdate"></span></div>
+    <div id="c-today" style="display:flex;flex-direction:column;gap:8px;margin-top:8px"><div class="es" style="padding:18px"><p>No sessions today 🎾</p></div></div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:20px">
+      <div class="card-sm tc"><div class="t-xl accent" id="c-stat-up">0</div><div class="t-xs t2">Upcoming</div></div>
+      <div class="card-sm tc"><div class="t-xl accent" id="c-stat-st">0</div><div class="t-xs t2">Students</div></div>
+      <div class="card-sm tc"><div class="t-xl accent" id="c-stat-to">0</div><div class="t-xs t2">Total</div></div>
+    </div>
+    <div class="mt24">
+      <div class="shd"><span class="t-xs t2">Upcoming Sessions</span><span class="t-xs accent" style="cursor:pointer" onclick="showCTab('schedule')">See All →</span></div>
+      <div id="c-up-list" style="display:flex;flex-direction:column;gap:8px;margin-top:8px"></div>
+    </div>
+  </div>
+  <div id="c-schedule" class="page" style="display:none">
+    <div class="t-xl mb16">My<br><span class="accent">Schedule</span></div>
+    <div style="display:flex;gap:6px;margin-bottom:14px">
+      <button class="btn bg bsm" id="cf-up" onclick="filtCSess('upcoming',this)" style="background:var(--a);color:var(--at)">Upcoming</button>
+      <button class="btn bg bsm" id="cf-pa" onclick="filtCSess('past',this)">Past</button>
+      <button class="btn bg bsm" id="cf-al" onclick="filtCSess('all',this)">All</button>
+    </div>
+    <div id="c-sess-list" style="display:flex;flex-direction:column;gap:10px"></div>
+  </div>
+  <div id="c-students" class="page" style="display:none">
+    <div class="t-xl mb16">My<br><span class="accent">Students</span></div>
+    <div id="c-stu-list" style="display:flex;flex-direction:column;gap:10px"></div>
+  </div>
+  <div id="c-availability" class="page" style="display:none">
+    <div class="t-xl mb16">My<br><span class="accent">Availability</span></div>
+    <p class="t-sm t2" style="margin-bottom:14px">Set recurring weekly hours — students only see your open slots.</p>
+    <div class="card mb16">
+      <div class="t-xs t2 mb12">Weekly Schedule</div>
+      <div id="avail-list"></div>
+      <button class="btn bp bfw" style="margin-top:16px" onclick="saveAvail()">Save Availability</button>
+    </div>
+    <div class="card">
+      <div class="t-xs t2 mb12">Block Time Off</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div class="field" style="margin:0"><label>From</label><input type="date" id="bl-from" class="fi"></div>
+        <div class="field" style="margin:0"><label>To</label><input type="date" id="bl-to" class="fi"></div>
+      </div>
+      <button class="btn bo bfw" style="margin-top:12px" onclick="addBlockout()">Block These Dates</button>
+      <div id="bl-list" style="margin-top:10px;display:flex;flex-direction:column;gap:6px"></div>
+    </div>
+  </div>
+  <div id="c-messages" class="page" style="display:none;padding-bottom:160px">
+    <div class="t-xl mb16">Messages</div>
+    <div id="c-conv-list" style="display:flex;flex-direction:column;gap:8px"></div>
+  </div>
+  <div id="c-profile" class="page" style="display:none">
+    <div class="t-xl mb16">Coach<br><span class="accent">Profile</span></div>
+    <div class="card" style="text-align:center;margin-bottom:16px">
+      <img id="c-pav" src="" style="width:76px;height:76px;border-radius:50%;object-fit:cover;margin:0 auto 12px;display:block">
+      <div class="t-lg" id="c-pname"></div><div class="t-sm t2 mt8" id="c-pspec"></div>
+    </div>
+    <div class="card mb16" id="c-pdet"></div>
+    <button class="btn bo bfw" onclick="editProfile()">Edit Profile</button>
+    <button class="btn bd bfw" style="margin-top:10px" onclick="signOut()">Sign Out</button>
+  </div>
+  <nav class="bnav">
+    <button class="ni active" id="c-n-home" onclick="showCTab('home')"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Home</button>
+    <button class="ni" id="c-n-schedule" onclick="showCTab('schedule')"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Schedule</button>
+    <button class="ni" id="c-n-students" onclick="showCTab('students')"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Students</button>
+    <button class="ni" id="c-n-availability" onclick="showCTab('availability')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Hours</button>
+    <button class="ni" id="c-n-messages" onclick="showCTab('messages')"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Messages</button>
+  </nav>
+</div>
+
+<!-- THREAD SCREEN -->
+<div id="screen-thread" class="screen">
+  <div class="topbar" style="position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;z-index:100">
+    <div class="fx aic g12">
+      <button class="bic" id="th-back" style="background:var(--s2)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+      <div><div class="t-md" id="th-name">Chat</div><div class="t-sm t2" id="th-role"></div></div>
+    </div>
+  </div>
+  <div style="padding:80px 16px 170px"><div style="display:flex;flex-direction:column;gap:10px" id="th-msgs"></div></div>
+  <div style="position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;display:flex;gap:8px;align-items:flex-end;padding:12px 16px;background:rgba(0,0,0,.92);backdrop-filter:blur(16px);border-top:1px solid var(--b)">
+    <textarea id="msg-inp" placeholder="Message…" rows="1" onkeydown="msgEnter(event)" style="flex:1;background:var(--s2);border:1.5px solid var(--b);border-radius:18px;padding:10px 14px;font-size:14px;color:var(--t1);font-family:inherit;resize:none;max-height:100px;outline:none;transition:border-color .2s"></textarea>
+    <button class="btn bp bsm" onclick="sendMsg()" style="flex-shrink:0">Send</button>
+  </div>
+</div>
+
+<!-- SESSION DETAIL SCREEN -->
+<div id="screen-session-detail" class="screen">
+  <div class="topbar" style="position:fixed;top:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;z-index:100">
+    <div class="fx aic g12">
+      <button class="bic" id="det-back" style="background:var(--s2)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg></button>
+      <div class="t-md">Session Details</div>
+    </div>
+  </div>
+  <div class="page" style="padding-top:80px" id="det-body"></div>
+</div>
+
+</div><!-- #app -->
+<script>
+'use strict';
+// ── Config ──────────────────────────────
+const SUPABASE_URL='https://YOUR_PROJECT.supabase.co';
+const SUPABASE_ANON_KEY='YOUR_ANON_KEY';
+const DEMO_MODE=true;
+
+// ── App state ──────────────────────────
+let CU=null,CP=null; // currentUser, currentProfile
+let calDate=new Date(), selDate=null, selCoach=null, selTime=null, selType=null;
+let curThread=null, sSessFilter='upcoming', cSessFilter='upcoming', drillFilter='All';
+let MSGS={};
+
+// ── Init ──────────────────────────────
+document.addEventListener('DOMContentLoaded',()=>{
+  setTimeout(()=>{document.getElementById('loader').classList.add('hidden');showScreen('screen-splash');},1000);
+  renderCal(); renderAvail('c1'); renderDrillFilters();
+  const h=new Date().getHours(),gr=document.getElementById('s-greet');
+  if(gr)gr.textContent=h<12?'morning':h<17?'afternoon':'evening';
+  const td=document.getElementById('c-tdate');
+  if(td)td.textContent=new Date().toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'});
+});
+
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
+function toast(msg,type=''){const t=document.getElementById('toast');t.textContent=msg;t.className=type?`show ${type}`:'show';clearTimeout(t._t);t._t=setTimeout(()=>t.className='',3200);}
+function openModal(html){document.getElementById('MB').innerHTML=html;document.getElementById('MO').classList.add('active');}
+function closeModal(){document.getElementById('MO').classList.remove('active');}
+
+// ── Student tabs ──────────────────────
+function showSTab(tab){
+  ['home','book','sessions','progress','drills','messages','profile'].forEach(t=>{
+    const el=document.getElementById('s-'+t);if(el)el.style.display='none';
+    const ni=document.getElementById('s-n-'+t);if(ni)ni.classList.remove('active');
+  });
+  const el=document.getElementById('s-'+tab);if(el)el.style.display='block';
+  const ni=document.getElementById('s-n-'+tab);if(ni)ni.classList.add('active');
+  if(tab==='sessions')loadStuSessions();
+  if(tab==='progress')loadStuProgress();
+  if(tab==='drills'){renderDrillFilters();renderDrillList();}
+  if(tab==='messages')loadConvs('student');
+  if(tab==='book'){selDate=null;selCoach=null;selTime=null;renderCal();hideBookSteps();}
+}
+// ── Coach tabs ──────────────────────
+function showCTab(tab){
+  ['home','schedule','students','availability','messages','profile'].forEach(t=>{
+    const el=document.getElementById('c-'+t);if(el)el.style.display='none';
+    const ni=document.getElementById('c-n-'+t);if(ni)ni.classList.remove('active');
+  });
+  const el=document.getElementById('c-'+tab);if(el)el.style.display='block';
+  const ni=document.getElementById('c-n-'+tab);if(ni)ni.classList.add('active');
+  if(tab==='schedule')loadCoachSessions();
+  if(tab==='students')loadCoachStudents();
+  if(tab==='messages')loadConvs('coach');
+  if(tab==='availability')renderAvail(CP?.id||'c1');
+}
+function hideBookSteps(){['coaches-wrap','times-wrap','notes-wrap'].forEach(id=>{const e=document.getElementById(id);if(e)e.style.display='none';});}
+
+// ── Auth ──────────────────────────────
+function fillDemo(type){document.getElementById('li-em').value=type==='student'?'student@demo.com':'coach@demo.com';document.getElementById('li-pw').value='demo1234';}
+function doLogin(){
+  const em=document.getElementById('li-em').value.trim(),pw=document.getElementById('li-pw').value;
+  if(!em||!pw){toast('Fill in all fields','error');return;}
+  if(em==='student@demo.com'&&pw==='demo1234'){CU={id:'s1',email:em};CP={...DEMO_STUDENTS[0]};enterApp();}
+  else if(em==='coach@demo.com'&&pw==='demo1234'){CU={id:'c1',email:em};CP={...DEMO_COACHES[0]};enterApp();}
+  else toast('Invalid credentials','error');
+}
+function doRegister(){
+  const fn=document.getElementById('rg-fn').value.trim(),ln=document.getElementById('rg-ln').value.trim();
+  const em=document.getElementById('rg-em').value.trim(),pw=document.getElementById('rg-pw').value;
+  const role=document.getElementById('rg-role').value,age=parseInt(document.getElementById('rg-age').value)||25,gen=document.getElementById('rg-gen').value;
+  if(!fn||!ln||!em||!pw){toast('Fill in all fields','error');return;}
+  if(pw.length<8){toast('Password min 8 characters','error');return;}
+  CU={id:'new-'+Date.now(),email:em};CP={id:CU.id,first_name:fn,last_name:ln,email:em,role,age,gender:gen};
+  document.getElementById('sf').style.display=role==='coach'?'none':'block';
+  document.getElementById('cf').style.display=role==='coach'?'block':'none';
+  showScreen('screen-profile-setup');
+}
+function saveProfile(){
+  const role=CP?.role||'student';
+  if(role==='student'){const fo=document.getElementById('p-foc');CP={...CP,level:document.getElementById('p-lvl').value,style:document.getElementById('p-sty').value,focus:Array.from(fo.selectedOptions).map(o=>o.value),bio:document.getElementById('p-bio').value};}
+  else{CP={...CP,specialty:document.getElementById('c-spe').value,years:parseInt(document.getElementById('c-yrs').value)||0,cert:document.getElementById('c-cer').value,bio:document.getElementById('c-bio').value};}
+  toast('Profile saved! Welcome to Big NC Tennis 🎾','success');enterApp();
+}
+function previewAvatar(input){const file=input.files[0];if(!file)return;const r=new FileReader();r.onload=e=>{const img=document.getElementById('av-pre'),ico=document.getElementById('av-ico');img.src=e.target.result;img.style.display='block';ico.style.display='none';if(CP)CP.avatar=e.target.result;};r.readAsDataURL(file);}
+function enterApp(){
+  const role=CP?.role||'student';
+  if(role==='coach'){populateCoach();showScreen('screen-coach');showCTab('home');}
+  else{populateStu();showScreen('screen-student');showSTab('home');}
+  toast(`Welcome back, ${CP?.first_name||'Player'}! 🎾`,'success');
+}
+function signOut(){CU=null;CP=null;showScreen('screen-splash');toast('Signed out');}
+
+// ── Student dashboard ──────────────────
+function populateStu(){
+  const p=CP,name=fullName(p),av=avatarURL(p);
+  document.getElementById('s-name').textContent=name;
+  document.getElementById('s-av').src=av;
+  const myId=p?.id||'s1';
+  const up=DEMO_SESSIONS.filter(s=>s.student_id===myId&&s.status==='upcoming').sort((a,b)=>new Date(a.date)-new Date(b.date));
+  const nw=document.getElementById('s-next-sess');
+  if(up.length){const ns=up[0],c=DEMO_COACHES.find(x=>x.id===ns.coach_id);nw.innerHTML=sessCardHTML(ns,'student',c);}
+  else nw.innerHTML='<div class="es"><p>No upcoming sessions. <span class="accent" style="cursor:pointer" onclick="showSTab(\'book\')">Book one →</span></p></div>';
+  const sk=DEMO_SKILLS[myId]||DEMO_SKILLS['s1'];
+  document.getElementById('s-skill-bars').innerHTML=skillBarsHTML(sk);
+  document.getElementById('s-drills-home').innerHTML=DRILL_LIBRARY.slice(0,3).map(d=>drillCardHTML(d)).join('');
+  document.getElementById('s-pname').textContent=name;
+  document.getElementById('s-plvl').textContent=levelLabel(p?.level);
+  document.getElementById('s-pav').src=av;
+  document.getElementById('s-pdet').innerHTML=`<div class="t-xs t2 mb12">My Game</div>${row('Style',styleLabel(p?.style))}${row('Level',levelLabel(p?.level))}${row('Focus',Array.isArray(p?.focus)?p.focus.map(capitalize).join(', '):'—')}${row('Age',p?.age?`${p.age} yrs`:'—')}${p?.bio?`<hr class="line"><p class="t-sm t2">${p.bio}</p>`:''}`;
+}
+function loadStuSessions(){
+  const myId=CP?.id||'s1';
+  const sess=DEMO_SESSIONS.filter(s=>s.student_id===myId&&s.status===(sSessFilter==='upcoming'?'upcoming':'past'));
+  const list=document.getElementById('s-sess-list');
+  list.innerHTML=sess.length?sess.map(s=>sessCardHTML(s,'student',DEMO_COACHES.find(c=>c.id===s.coach_id))).join(''):'<div class="es"><p>No sessions</p></div>';
+}
+function loadStuProgress(){
+  const myId=CP?.id||'s1';
+  document.getElementById('s-prog-bars').innerHTML=skillBarsHTML(DEMO_SKILLS[myId]||DEMO_SKILLS['s1']);
+  const fbs=DEMO_FEEDBACK.filter(f=>f.student_id===myId);
+  document.getElementById('s-fb-list').innerHTML=fbs.length?fbs.map(f=>`<div class="note-card"><div class="fx jb aic mb8"><span class="t-sm" style="font-weight:700">Coach Note</span><span class="t-xs t2">${f.date}</span></div><p class="t-sm t2">${f.text}</p></div>`).join(''):'<div class="es"><p>No feedback yet</p></div>';
+}
+function filtSess(f,btn){sSessFilter=f;document.querySelectorAll('[id^="sf-"]').forEach(b=>{b.style.background='var(--s3)';b.style.color='var(--t1)';});btn.style.background='var(--a)';btn.style.color='var(--at)';loadStuSessions();}
+
+// ── Coach dashboard ──────────────────
+function populateCoach(){
+  const p=CP,name=fullName(p),av=avatarURL(p);
+  document.getElementById('c-name').textContent=name;document.getElementById('c-av').src=av;
+  const myId=p?.id||'c1',today=new Date().toISOString().slice(0,10);
+  const tSess=DEMO_SESSIONS.filter(s=>s.coach_id===myId&&s.date===today);
+  const tel=document.getElementById('c-today');
+  tel.innerHTML=tSess.length?tSess.map(s=>sessCardHTML(s,'coach',null,DEMO_STUDENTS.find(st=>st.id===s.student_id))).join(''):'<div class="es" style="padding:16px"><p>No sessions today 🎾</p></div>';
+  const upS=DEMO_SESSIONS.filter(s=>s.coach_id===myId&&s.status==='upcoming');
+  document.getElementById('c-stat-up').textContent=upS.length;
+  document.getElementById('c-stat-st').textContent=new Set(DEMO_SESSIONS.filter(s=>s.coach_id===myId).map(s=>s.student_id)).size;
+  document.getElementById('c-stat-to').textContent=DEMO_SESSIONS.filter(s=>s.coach_id===myId).length;
+  const upList=document.getElementById('c-up-list');
+  upList.innerHTML=upS.slice(0,4).length?upS.slice(0,4).map(s=>sessCardHTML(s,'coach',null,DEMO_STUDENTS.find(st=>st.id===s.student_id))).join(''):'<div class="es" style="padding:16px"><p>No upcoming sessions</p></div>';
+  document.getElementById('c-pname').textContent=name;document.getElementById('c-pspec').textContent=p?.specialty||'Tennis Coach';document.getElementById('c-pav').src=av;
+  document.getElementById('c-pdet').innerHTML=`<div class="t-xs t2 mb12">Coaching Profile</div>${row('Specialty',p?.specialty||'—')}${row('Experience',p?.years?`${p.years} years`:'—')}${row('Certifications',p?.cert||'—')}${p?.bio?`<hr class="line"><p class="t-sm t2">${p.bio}</p>`:''}`;
+}
+function loadCoachSessions(){
+  const myId=CP?.id||'c1';
+  let sess=DEMO_SESSIONS.filter(s=>s.coach_id===myId);
+  if(cSessFilter==='upcoming')sess=sess.filter(s=>s.status==='upcoming');
+  if(cSessFilter==='past')sess=sess.filter(s=>s.status==='past');
+  document.getElementById('c-sess-list').innerHTML=sess.length?sess.map(s=>sessCardHTML(s,'coach',null,DEMO_STUDENTS.find(st=>st.id===s.student_id))).join(''):'<div class="es"><p>No sessions</p></div>';
+}
+function filtCSess(f,btn){cSessFilter=f;document.querySelectorAll('[id^="cf-"]').forEach(b=>{b.style.background='var(--s3)';b.style.color='var(--t1)';});btn.style.background='var(--a)';btn.style.color='var(--at)';loadCoachSessions();}
+function loadCoachStudents(){
+  const myId=CP?.id||'c1';
+  const stuIds=[...new Set(DEMO_SESSIONS.filter(s=>s.coach_id===myId).map(s=>s.student_id))];
+  const list=document.getElementById('c-stu-list');
+  if(!stuIds.length){list.innerHTML='<div class="es"><p>No students yet</p></div>';return;}
+  list.innerHTML=stuIds.map(id=>{
+    const stu=DEMO_STUDENTS.find(s=>s.id===id);if(!stu)return'';
+    const cnt=DEMO_SESSIONS.filter(s=>s.student_id===id&&s.coach_id===myId).length;
+    return`<div class="card"><div class="fx aic g12"><img src="${avatarURL(stu)}" class="cav"><div style="flex:1"><div class="t-md">${fullName(stu)}</div><div class="t-sm t2 mt8">${levelLabel(stu.level)} · ${stu.age} yrs · ${cnt} session${cnt!==1?'s':''}</div><div style="display:flex;gap:8px;margin-top:10px"><button class="btn bg bsm" onclick="openStuProfile('${id}')">View</button><button class="btn bg bsm" onclick="openMsgWith('${id}','${fullName(stu)}','student')">Message</button><button class="btn bg bsm" onclick="openFbModal('${id}','${fullName(stu)}')">Feedback</button></div></div></div></div>`;
+  }).join('');
+}
+function openStuProfile(id){
+  const stu=DEMO_STUDENTS.find(s=>s.id===id);if(!stu)return;
+  const sk=DEMO_SKILLS[id]||DEMO_SKILLS['s1'];
+  openModal(`<div class="fx aic g12 mb16"><img src="${avatarURL(stu)}" class="cav" style="width:60px;height:60px"><div><div class="t-lg">${fullName(stu)}</div><div class="t-sm t2">${levelLabel(stu.level)} · Age ${stu.age}</div></div></div><hr class="line">${row('Style',styleLabel(stu.style))}${row('Focus',Array.isArray(stu.focus)?stu.focus.map(capitalize).join(', '):'—')}${stu.bio?`<p class="t-sm t2 mt12">${stu.bio}</p>`:''}<div class="t-xs t2 mt16 mb12">Skill Assessment</div><div class="skill-bars">${skillBarsHTML(sk)}</div><button class="btn bp bfw" style="margin-top:20px" onclick="openFbModal('${id}','${fullName(stu)}');closeModal()">Add Feedback</button><button class="btn bo bfw" style="margin-top:10px" onclick="openAssignDrill('${id}','${fullName(stu)}');closeModal()">Assign Drill</button>`);
+}
+function openFbModal(studentId,name){
+  const sk=DEMO_SKILLS[studentId]||DEMO_SKILLS['s1'];
+  openModal(`<div class="t-lg mb16">Feedback for ${name}</div><div class="field"><label>Notes &amp; Feedback</label><textarea id="fb-txt" class="fi" style="min-height:110px" placeholder="What did you work on? Key observations…"></textarea></div><div class="t-xs t2 mb12">Update Skill Ratings</div>${sk.map(s=>`<div class="fx aic g8" style="margin-bottom:10px"><span class="skill-name t-sm">${s.skill}</span><input type="range" min="0" max="100" value="${s.value}" id="sk-${s.skill}" oninput="document.getElementById('skv-${s.skill}').textContent=this.value" style="flex:1;accent-color:var(--a)"><span class="t-sm t2" style="width:30px;text-align:right" id="skv-${s.skill}">${s.value}</span></div>`).join('')}<button class="btn bp bfw" style="margin-top:20px" onclick="submitFb('${studentId}','${name}')">Submit Feedback</button>`);
+}
+function submitFb(studentId,name){const txt=document.getElementById('fb-txt')?.value?.trim();if(!txt){toast('Please write feedback','error');return;}DEMO_FEEDBACK.unshift({id:'fb'+Date.now(),coach_id:CP?.id||'c1',student_id:studentId,date:new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}),text:txt});closeModal();toast(`Feedback saved for ${name} ✓`,'success');}
+function openAssignDrill(studentId,name){openModal(`<div class="t-lg mb16">Assign Drill — ${name}</div><div style="display:flex;flex-direction:column;gap:8px;max-height:65vh;overflow-y:auto;padding-right:4px">${DRILL_LIBRARY.map(d=>`<div class="dc" style="cursor:pointer" onclick="assignDrill('${d.id}','${d.name}','${studentId}','${name}')"><div class="dt"><img src="${d.thumb}" onerror="this.style.display='none'"></div><div style="flex:1"><div class="t-sm" style="font-weight:700">${d.name}</div><div class="t-xs t2 mt8">${d.category} · ${d.level}</div></div><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--t3)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>`).join('')}</div>`);}
+function assignDrill(drillId,drillName,stuId,name){closeModal();toast(`"${drillName}" assigned to ${name} 🎾`,'success');}
+
+// ── Booking ──────────────────────────
+function selType(el){document.querySelectorAll('.stb').forEach(b=>{b.style.borderColor='';b.style.background='var(--s2)';});el.style.borderColor='var(--a)';el.style.background='rgba(201,231,10,.08)';selType=el.dataset.type;}
+function renderCal(){
+  const grid=document.getElementById('cal-grid');if(!grid)return;
+  const lbl=document.getElementById('cal-lbl');if(lbl)lbl.textContent=`${MONTHS[calDate.getMonth()]} ${calDate.getFullYear()}`;
+  const today=new Date();today.setHours(0,0,0,0);
+  const y=calDate.getFullYear(),m=calDate.getMonth(),fd=new Date(y,m,1).getDay(),days=new Date(y,m+1,0).getDate();
+  let h=DAYS_SHORT.map(d=>`<div class="cdl">${d}</div>`).join('');
+  for(let i=0;i<fd;i++)h+='<div class="cd ce"></div>';
+  for(let d=1;d<=days;d++){
+    const dt=new Date(y,m,d);dt.setHours(0,0,0,0);
+    const ds=`${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const past=dt<today,isTd=dt.getTime()===today.getTime(),isSel=selDate===ds;
+    const hasDot=DEMO_SESSIONS.some(s=>s.date===ds&&s.status==='upcoming');
+    let cls='cd';if(past)cls+=' dis';if(isTd)cls+=' today';if(isSel)cls+=' sel';if(hasDot)cls+=' dot';
+    h+=`<button class="${cls}" ${past?'disabled':''} onclick="selectDate('${ds}')">${d}</button>`;
+  }
+  grid.innerHTML=h;
+}
+function prevMonth(){calDate.setMonth(calDate.getMonth()-1);renderCal();}
+function nextMonth(){calDate.setMonth(calDate.getMonth()+1);renderCal();}
+function selectDate(ds){
+  selDate=ds;selCoach=null;selTime=null;renderCal();
+  const coaches=getAvailableCoachesForDate(DEMO_SESSIONS,DEMO_BLOCKOUTS,WEEK_AVAIL,ds);
+  const wrap=document.getElementById('coaches-wrap'),lbl=document.getElementById('coaches-dlbl');
+  const dt=new Date(ds+'T00:00:00');if(lbl)lbl.textContent=dt.toLocaleDateString('en-US',{month:'short',day:'numeric'});
+  wrap.style.display='block';
+  document.getElementById('coach-list').innerHTML=coaches.length
+    ?coaches.map(c=>{const slots=getAvailableTimesForCoach(DEMO_SESSIONS,DEMO_BLOCKOUTS,WEEK_AVAIL,c.id,ds);return`<div class="cp${selCoach?.id===c.id?' sel':''}" onclick="selectCoach('${c.id}')"><img src="${c.avatar}" class="cav"><div style="flex:1"><div class="t-md">${c.first_name} ${c.last_name}</div><div class="t-sm t2 mt8">${c.specialty}</div><div style="margin-top:8px"><span class="pill pg">Available</span><span class="t-xs t2" style="margin-left:8px">${slots.length} slot${slots.length!==1?'s':''}</span></div></div><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--t3)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></div>`;}).join('')
+    :'<div class="es" style="padding:14px"><p>No coaches available this day</p></div>';
+  document.getElementById('times-wrap').style.display='none';
+  document.getElementById('notes-wrap').style.display='none';
+  wrap.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function selectCoach(coachId){selCoach=DEMO_COACHES.find(c=>c.id===coachId);selectDate(selDate);showTimes(coachId);}
+function showTimes(coachId){
+  const wrap=document.getElementById('times-wrap'),grid=document.getElementById('time-grid'),info=document.getElementById('times-info');
+  wrap.style.display='block';
+  const avail=getAvailableTimesForCoach(DEMO_SESSIONS,DEMO_BLOCKOUTS,WEEK_AVAIL,coachId,selDate);
+  if(info)info.textContent=`${avail.length} available`;
+  grid.innerHTML=AVAIL_TIMES.map(t=>{const tk=!avail.includes(t);return`<div class="ts${tk?' taken':''}${selTime===t?' sel':''}" onclick="${tk?'':'"selectTime(\''+t+'\')"'}">${t}</div>`;}).join('');
+  wrap.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function selectTime(t){selTime=t;if(selCoach)showTimes(selCoach.id);document.getElementById('notes-wrap').style.display='block';document.getElementById('notes-wrap').scrollIntoView({behavior:'smooth',block:'nearest'});}
+function confirmBooking(){
+  const myId=CP?.id||'s1';
+  const v=validateBooking(DEMO_SESSIONS,myId,selCoach?.id,selDate,selTime,selType);
+  if(!v.valid){toast(v.error,'error');return;}
+  const ns={id:'ss'+Date.now(),date:selDate,time:selTime,type:selType,coach_id:selCoach.id,student_id:myId,status:'upcoming',objective:document.getElementById('bk-obj').value,notes:document.getElementById('bk-notes').value};
+  DEMO_SESSIONS.push(ns);
+  const stu=CP,coa=selCoach;
+  selDate=null;selCoach=null;selTime=null;selType=null;
+  document.getElementById('bk-obj').value='';document.getElementById('bk-notes').value='';
+  document.querySelectorAll('.stb').forEach(b=>{b.style.borderColor='';b.style.background='var(--s2)';});
+  hideBookSteps();populateStu();showEmailModal(ns,stu,coa);
+}
+
+// ── Email / Calendar export ────────────
+function showEmailModal(session,student,coach){
+  if(!session||!student||!coach)return;
+  const eS=generateBookingEmail(session,student,coach,'student');
+  const eC=generateBookingEmail(session,student,coach,'coach');
+  const gUrl=buildGoogleCalendarURL(session,student,coach);
+  const oUrl=buildOutlookURL(session,student,coach);
+  window._ES=eS;window._EC=eC;window._sess=session;window._stu=student;window._coa=coach;
+  openModal(`
+    <div class="fx aic g12 mb16"><div style="width:42px;height:42px;border-radius:12px;background:var(--ad);display:flex;align-items:center;justify-content:center;font-size:20px">🎾</div><div><div class="t-lg">Session Booked!</div><div class="t-sm t2">Share &amp; export your confirmation</div></div></div>
+    <div class="etabs"><button class="etab active" onclick="swTab('draft',this)">Email Draft</button><button class="etab" onclick="swTab('gcal',this)">Google Cal</button><button class="etab" onclick="swTab('outlook',this)">Outlook</button><button class="etab" onclick="swTab('ics',this)">Download</button></div>
+    <div class="epanel active" id="ep-draft">
+      <div style="display:flex;gap:6px;margin-bottom:10px">
+        <button class="btn bg bsm" id="dt-s" onclick="togDraft('student')" style="background:var(--a);color:var(--at)">To Student</button>
+        <button class="btn bg bsm" id="dt-c" onclick="togDraft('coach')">To Coach</button>
+      </div>
+      <div class="t-xs t2 mb8">Subject: <span style="color:var(--t1)" id="dr-subj">${eS.subject}</span></div>
+      <div class="edt" id="dr-body">${eS.body}</div>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <button class="btn bg bsm" onclick="copyDraft()" style="flex:1">📋 Copy Text</button>
+        <button class="btn bg bsm" onclick="openMail()" style="flex:1">✉️ Open in Mail</button>
+      </div>
+    </div>
+    <div class="epanel" id="ep-gcal">
+      <button class="ebtn" onclick="window.open('${gUrl}','_blank')"><div class="ico" style="background:rgba(66,133,244,.15)">📅</div><div><div class="et">Add to Google Calendar</div><div class="es">Opens in browser — sign in to Google</div></div><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--t2)" stroke-width="2" style="margin-left:auto"><polyline points="9 18 15 12 9 6"/></svg></button>
+      <div style="background:var(--s2);border-radius:12px;padding:14px;font-size:12px;color:var(--t2);line-height:1.7"><strong style="color:var(--t1)">How it works:</strong><br>1. Click above · 2. Google Calendar opens · 3. Click Save · 4. Event syncs to all devices</div>
+    </div>
+    <div class="epanel" id="ep-outlook">
+      <button class="ebtn" onclick="window.open('${oUrl}','_blank')"><div class="ico" style="background:rgba(0,120,212,.15)">📆</div><div><div class="et">Add to Outlook Calendar</div><div class="es">Opens in Outlook.com — works with M365</div></div><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--t2)" stroke-width="2" style="margin-left:auto"><polyline points="9 18 15 12 9 6"/></svg></button>
+      <div style="background:var(--s2);border-radius:12px;padding:14px;font-size:12px;color:var(--t2);line-height:1.7"><strong style="color:var(--t1)">How it works:</strong><br>1. Click above · 2. Outlook opens pre-filled · 3. Click Save · 4. Syncs to all devices</div>
+    </div>
+    <div class="epanel" id="ep-ics">
+      <button class="ebtn" onclick="downloadICS(window._sess,window._stu,window._coa)"><div class="ico" style="background:var(--ad)">📥</div><div><div class="et">Download .ics File</div><div class="es">Universal — Apple, Google, Outlook &amp; more</div></div><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--t2)" stroke-width="2" style="margin-left:auto"><polyline points="8 17 12 21 16 17"/><line x1="12" y1="12" x2="12" y2="21"/></svg></button>
+      <div style="background:var(--s2);border-radius:12px;padding:14px;font-size:12px;color:var(--t2);line-height:1.7"><strong style="color:var(--t1)">Compatible with:</strong><br>Apple Calendar · Google Calendar · Outlook<br>Thunderbird · Any iCalendar app</div>
+    </div>
+    <button class="btn bg bfw" style="margin-top:16px" onclick="closeModal();showSTab('sessions')">View My Sessions →</button>
+  `);
+}
+function swTab(tab,btn){document.querySelectorAll('.etab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.epanel').forEach(p=>p.classList.remove('active'));btn.classList.add('active');document.getElementById('ep-'+tab).classList.add('active');}
+function togDraft(r){const d=r==='student'?window._ES:window._EC;document.getElementById('dr-subj').textContent=d.subject;document.getElementById('dr-body').textContent=d.body;document.getElementById('dt-s').style.background=r==='student'?'var(--a)':'var(--s3)';document.getElementById('dt-s').style.color=r==='student'?'var(--at)':'var(--t1)';document.getElementById('dt-c').style.background=r==='coach'?'var(--a)':'var(--s3)';document.getElementById('dt-c').style.color=r==='coach'?'var(--at)':'var(--t1)';}
+function copyDraft(){const t=document.getElementById('dr-body')?.textContent||'';navigator.clipboard.writeText(t).then(()=>toast('Copied! ✓','success')).catch(()=>toast('Copy failed','error'));}
+function openMail(){const d=document.getElementById('dr-body')?.textContent||'',s=document.getElementById('dr-subj')?.textContent||'';const to=encodeURIComponent(window._ES?.to||'');window.location.href=`mailto:${to}?subject=${encodeURIComponent(s)}&body=${encodeURIComponent(d)}`;}
+
+// ── Session detail ───────────────────
+function openSessDet(sid){
+  const s=DEMO_SESSIONS.find(x=>x.id===sid);if(!s)return;
+  const d=new Date(s.date+'T00:00:00'),role=CP?.role||'student';
+  const coach=DEMO_COACHES.find(c=>c.id===s.coach_id)||{};
+  const stu=DEMO_STUDENTS.find(st=>st.id===s.student_id)||{};
+  document.getElementById('det-back').onclick=()=>showScreen(role==='coach'?'screen-coach':'screen-student');
+  document.getElementById('det-body').innerHTML=`
+    <div class="card mb16 tc"><div class="sdb" style="width:66px;height:74px;margin:0 auto 12px"><div class="mon">${MONTHS[d.getMonth()]}</div><div class="day" style="font-size:32px">${d.getDate()}</div><div class="t-xs t2">${d.getFullYear()}</div></div><div class="t-xl">${s.type}</div><div class="t-sm t2 mt8">⏰ ${s.time}</div><div class="mt12"><span class="pill ${s.status==='upcoming'?'pa':'pg'}">${s.status}</span></div></div>
+    ${role==='student'?`<div class="card mb16"><div class="t-xs t2 mb12">Coach</div><div class="fx aic g12"><img src="${coach.avatar||''}" class="cav"><div><div class="t-md">${coach.first_name||''} ${coach.last_name||''}</div><div class="t-sm t2">${coach.specialty||''}</div></div></div></div>`:`<div class="card mb16"><div class="t-xs t2 mb12">Student</div><div class="fx aic g12"><img src="${avatarURL(stu)}" class="cav"><div><div class="t-md">${fullName(stu)}</div><div class="t-sm t2">${levelLabel(stu.level)}</div></div></div></div>`}
+    ${s.objective?`<div class="note-card mb16"><div class="t-xs t2 mb8">Objective</div><p class="t-sm t2">${s.objective}</p></div>`:''}
+    ${s.status==='upcoming'?`<button class="btn bp bfw mb8" style="margin-bottom:8px" onclick="showEmailModal(DEMO_SESSIONS.find(x=>x.id==='${s.id}'),${role==='student'?'CP':'DEMO_STUDENTS.find(st=>st.id===\''+s.student_id+'\')'},${role==='student'?'DEMO_COACHES.find(c=>c.id===\''+s.coach_id+'\')':'CP'})">📅 Export / Email</button><button class="btn bo bfw mb8" style="margin-bottom:8px" onclick="openMsgWith('${role==='student'?s.coach_id:s.student_id}','${role==='student'?fullName(coach):fullName(stu)}','${role==='student'?'coach':'student'}')">Message ${role==='student'?'Coach':'Student'}</button><button class="btn bd bfw" onclick="cancelSess('${s.id}')">Cancel Session</button>`:''}
+    ${s.status==='past'&&role==='coach'?`<div class="card mt16"><div class="t-xs t2 mb12">Post-Session Feedback</div><textarea class="fi" id="post-fb" style="min-height:96px" placeholder="Add feedback for this student…"></textarea><button class="btn bp bfw" style="margin-top:12px" onclick="quickFb('${s.student_id}','${s.id}')">Save Feedback</button></div>`:''}
+  `;
+  showScreen('screen-session-detail');
+}
+function quickFb(stuId,sessId){const txt=document.getElementById('post-fb')?.value?.trim();if(!txt){toast('Please write feedback','error');return;}const stu=DEMO_STUDENTS.find(s=>s.id===stuId);DEMO_FEEDBACK.unshift({id:'fb'+Date.now(),coach_id:CP?.id||'c1',student_id:stuId,session_id:sessId,date:new Date().toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'}),text:txt});toast(`Feedback saved for ${stu?.first_name||'student'} ✓`,'success');document.getElementById('post-fb').value='';}
+function cancelSess(id){const s=DEMO_SESSIONS.find(x=>x.id===id);if(s)s.status='cancelled';const role=CP?.role||'student';showScreen(role==='coach'?'screen-coach':'screen-student');if(role==='student')populateStu();else populateCoach();toast('Session cancelled','error');}
+
+// ── Drills ──────────────────────────
+function renderDrillFilters(){const row=document.getElementById('drill-filters');if(!row)return;const cats=['All',...new Set(DRILL_LIBRARY.map(d=>d.category))];row.innerHTML=cats.map(c=>`<button class="btn bg bsm" onclick="setDrillFilter('${c}',this)" style="flex-shrink:0;${c===drillFilter?'background:var(--a);color:var(--at)':''}">${c}</button>`).join('');}
+function setDrillFilter(cat,btn){drillFilter=cat;renderDrillFilters();renderDrillList();}
+function renderDrillList(){const list=document.getElementById('drill-list');if(!list)return;const dr=drillFilter==='All'?DRILL_LIBRARY:DRILL_LIBRARY.filter(d=>d.category===drillFilter);list.innerHTML=dr.map(d=>drillCardHTML(d)).join('');}
+function drillCardHTML(d){return`<div class="dc"><div class="dt" onclick="openDrillMod('${d.id}')"><img src="${d.thumb}" onerror="this.style.display='none'"></div><div style="flex:1;min-width:0"><div class="t-sm" style="font-weight:700">${d.name}</div><div class="t-xs t2 mt8">${d.category} · ${d.level}</div><div class="t-xs t2 mt8" style="line-height:1.4">${d.desc}</div></div><button class="bic" style="background:var(--ad);flex-shrink:0;margin-left:8px;width:38px;height:38px" onclick="openDrillMod('${d.id}')"><svg width="12" height="12" viewBox="0 0 24 24" fill="var(--a)"><polygon points="5 3 19 12 5 21 5 3"/></svg></button></div>`;}
+function openDrillMod(id){const d=DRILL_LIBRARY.find(x=>x.id===id);if(!d)return;openModal(`<div class="t-lg mb8">${d.name}</div><div style="margin-bottom:10px"><span class="pill pa">${d.category}</span> <span class="pill py">${d.level}</span></div><p class="t-sm t2 mb16" style="line-height:1.6">${d.desc}</p><a href="${d.video}" target="_blank" rel="noopener" class="btn bp bfw" style="text-decoration:none;display:flex;margin-bottom:10px">▶ Watch on YouTube</a><button class="btn bg bfw" onclick="closeModal()">Close</button>`);}
+
+// ── Availability ─────────────────────
+function renderAvail(cId){
+  const el=document.getElementById('avail-list');if(!el)return;
+  const av=WEEK_AVAIL[cId]||makeDefaultAvail();
+  el.innerHTML=DAY_NAMES.map((name,i)=>`<div class="ar"><div><div class="t-sm" style="font-weight:700">${name}</div><div class="t-xs t2">${av[i].on?`${av[i].start} – ${av[i].end}`:'Off'}</div></div><div class="fx aic g8">${av[i].on?`<input type="time" value="${av[i].start}" onchange="WEEK_AVAIL['${cId}'][${i}].start=this.value;renderAvail('${cId}')" class="fi t-sm" style="width:85px;padding:6px 8px;font-size:12px"><span class="t-xs t2">–</span><input type="time" value="${av[i].end}" onchange="WEEK_AVAIL['${cId}'][${i}].end=this.value;renderAvail('${cId}')" class="fi t-sm" style="width:85px;padding:6px 8px;font-size:12px">`:''}
+  <button class="toggle ${av[i].on?'on':''}" onclick="WEEK_AVAIL['${cId}'][${i}].on=!WEEK_AVAIL['${cId}'][${i}].on;renderAvail('${cId}')"></button></div></div>`).join('');
+}
+function saveAvail(){toast('Availability saved!','success');}
+function addBlockout(){
+  const from=document.getElementById('bl-from').value,to=document.getElementById('bl-to').value;
+  if(!from||!to){toast('Select from and to dates','error');return;}
+  if(from>to){toast('From must be before To','error');return;}
+  const cId=CP?.id||'c1';DEMO_BLOCKOUTS.push({coach_id:cId,from_date:from,to_date:to});
+  const list=document.getElementById('bl-list');
+  const div=document.createElement('div');div.className='fx jb aic';
+  div.innerHTML=`<span class="t-sm t2">${from} → ${to}</span><button class="btn bd bsm" onclick="DEMO_BLOCKOUTS=DEMO_BLOCKOUTS.filter(b=>!(b.coach_id==='${cId}'&&b.from_date==='${from}'));this.parentElement.remove()">Remove</button>`;
+  list.appendChild(div);document.getElementById('bl-from').value='';document.getElementById('bl-to').value='';toast('Dates blocked','success');
+}
+
+// ── Messages ─────────────────────────
+function loadConvs(role){
+  const listId=role==='coach'?'c-conv-list':'s-conv-list';
+  const list=document.getElementById(listId);if(!list)return;
+  const convs=role==='student'
+    ?DEMO_COACHES.slice(0,4).map(c=>({id:c.id,name:`Coach ${c.first_name}`,av:c.avatar,last:'Tap to message'}))
+    :DEMO_STUDENTS.slice(0,5).map(s=>({id:s.id,name:fullName(s),av:avatarURL(s),last:'Tap to message'}));
+  list.innerHTML=convs.map(c=>`<div class="sc" onclick="openMsgWith('${c.id}','${c.name}','${role==='coach'?'student':'coach'}')"><img src="${c.av}" class="cav" style="width:46px;height:46px"><div style="flex:1"><div class="t-md">${c.name}</div><div class="t-sm t2 mt8">${c.last}</div></div></div>`).join('');
+}
+function openMsgWith(uid,uname,otherRole){
+  const back=CP?.role==='coach'?'screen-coach':'screen-student';
+  curThread={id:uid,name:uname};
+  document.getElementById('th-name').textContent=uname;
+  document.getElementById('th-role').textContent=otherRole==='coach'?'🎾 Coach':'🎾 Student';
+  document.getElementById('th-back').onclick=()=>showScreen(back);
+  renderThread(uid);showScreen('screen-thread');
+}
+function renderThread(uid){
+  const msgs=MSGS[uid]||[];
+  const c=document.getElementById('th-msgs');
+  c.innerHTML=msgs.length?msgs.map(m=>{const isMe=(CP?.role==='student'&&m.from==='s1')||(CP?.role==='coach'&&m.from!=='s1');return`<div style="display:flex;flex-direction:column;align-items:${isMe?'flex-end':'flex-start'};gap:3px"><div class="mb ${isMe?'mme':'mth'}">${m.text}</div><div class="t-xs t2">${m.time}</div></div>`;}).join(''):'<div class="es"><p>Start the conversation!</p></div>';
+  setTimeout(()=>{c.scrollTop=c.scrollHeight;},50);
+}
+function sendMsg(){const inp=document.getElementById('msg-inp'),txt=inp.value.trim();if(!txt||!curThread)return;const uid=curThread.id;if(!MSGS[uid])MSGS[uid]=[];MSGS[uid].push({from:CP?.id||'s1',text:txt,time:'Just now'});inp.value='';renderThread(uid);}
+function msgEnter(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}}
+
+// ── Edit profile ─────────────────────
+function editProfile(){
+  const p=CP;if(!p)return;
+  if(p.role==='student')openModal(`<div class="t-lg mb16">Edit Profile</div><div class="field"><label>Level</label><select id="ep-lvl" class="fi">${['beginner','intermediate','advanced','elite'].map(v=>`<option value="${v}"${p.level===v?' selected':''}>${levelLabel(v)}</option>`).join('')}</select></div><div class="field"><label>Bio</label><textarea id="ep-bio" class="fi">${p.bio||''}</textarea></div><button class="btn bp bfw mt12" onclick="saveEP()">Save Changes</button>`);
+  else openModal(`<div class="t-lg mb16">Edit Coach Profile</div><div class="field"><label>Certifications</label><input id="ep-cer" type="text" class="fi" value="${p.cert||''}"></div><div class="field"><label>Bio</label><textarea id="ep-bio" class="fi">${p.bio||''}</textarea></div><button class="btn bp bfw mt12" onclick="saveEP()">Save Changes</button>`);
+}
+function saveEP(){const bio=document.getElementById('ep-bio')?.value;if(bio!==undefined)CP.bio=bio;const lvl=document.getElementById('ep-lvl')?.value;if(lvl)CP.level=lvl;const cer=document.getElementById('ep-cer')?.value;if(cer!==undefined)CP.cert=cer;closeModal();if(CP.role==='coach')populateCoach();else populateStu();toast('Profile updated!','success');}
+
+// ── Helpers ──────────────────────────
+function sessCardHTML(s,role,coach,stu){
+  const d=new Date(s.date+'T00:00:00');
+  const other=role==='student'?(coach?`Coach ${coach.first_name} ${coach.last_name}`:'—'):(stu?fullName(stu):'—');
+  return`<div class="sc" onclick="openSessDet('${s.id}')"><div class="sdb"><div class="mon">${MONTHS[d.getMonth()].slice(0,3)}</div><div class="day">${d.getDate()}</div></div><div style="flex:1"><div class="t-md">${s.type}</div><div class="t-sm t2 mt8">⏰ ${s.time}</div><div class="t-sm t2 mt8">${other}</div><div style="margin-top:8px"><span class="pill ${s.status==='upcoming'?'pa':'pg'}">${s.status}</span></div></div></div>`;
+}
+</script>
+</body>
+</html>

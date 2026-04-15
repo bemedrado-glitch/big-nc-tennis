@@ -1,0 +1,31 @@
+# Proprietary / internal — do NOT publish
+baseline/filveo-ref/
+baseline/research-raw/
+baseline/gtm-bible-template.md
+baseline/extract.js
+baseline/strings_dump.txt
+
+# Claude Code internal
+.claude/
+
+# Environment / local
+.env
+.env.*
+*.local
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Node / build (if we add any later)
+node_modules/
+dist/
+build/
+.next/
+.turbo/
+
+# Logs
+*.log
+npm-debug.log*

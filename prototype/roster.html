@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Big NC Tennis — Roster Manager</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:opsz,wght@9..40,300..800&display=swap" rel="stylesheet">
+<script src="data.js"></script>
+<style>
+:root{--bg:#000;--s1:#0d0d0d;--s2:#161616;--s3:#222;--s4:#2a2a2a;--b:rgba(255,255,255,.07);--bm:rgba(255,255,255,.13);--a:#C9E70A;--ah:#D8F520;--ad:rgba(201,231,10,.12);--at:#000;--t1:#fff;--t2:#888;--t3:#444;--green:#34C759;--orange:#FF9F0A;--red:#FF3B30;--blue:#0A84FF;--purple:#BF5AF2}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',-apple-system,sans-serif;background:var(--bg);color:var(--t1);min-height:100vh;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+::-webkit-scrollbar{width:3px;height:3px}::-webkit-scrollbar-thumb{background:var(--s3)}
+input,select,textarea{font-family:inherit;color:var(--t1);background:none;outline:none;border:none}
+button{cursor:pointer;font-family:inherit}
+
+/* LAYOUT */
+.topbar{background:rgba(0,0,0,.9);backdrop-filter:blur(16px);border-bottom:1px solid var(--b);padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:60px;position:sticky;top:0;z-index:100}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;color:var(--a)}
+.logo span{color:var(--t2);font-size:13px;font-family:'DM Sans',sans-serif;letter-spacing:.5px;margin-left:10px;font-weight:600}
+.main{display:grid;grid-template-columns:240px 1fr;min-height:calc(100vh - 60px)}
+.sidebar{background:var(--s1);border-right:1px solid var(--b);padding:24px 16px;display:flex;flex-direction:column;gap:4px}
+.content{padding:28px 32px;overflow-y:auto}
+
+/* SIDEBAR */
+.sbl{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;color:var(--t2);border:none;background:none;width:100%;text-align:left}
+.sbl svg{width:16px;height:16px;stroke:var(--t2);fill:none;stroke-width:2;flex-shrink:0;transition:stroke .15s}
+.sbl:hover{background:var(--s3);color:var(--t1)}.sbl:hover svg{stroke:var(--t1)}
+.sbl.active{background:var(--ad);color:var(--a)}.sbl.active svg{stroke:var(--a)}
+.sidebar-section{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--t3);padding:16px 12px 6px;margin-top:8px}
+
+/* PANELS */
+.panel{display:none}.panel.active{display:block}
+
+/* SEASON CHIPS */
+.season-chip{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:100px;border:1.5px solid var(--b);font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;background:var(--s2)}
+.season-chip:hover{border-color:var(--bm)}.season-chip.active{border-color:var(--a);background:var(--ad);color:var(--a)}
+.season-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+
+/* CARDS */
+.card{background:var(--s1);border:1px solid var(--b);border-radius:18px;padding:20px}
+.card-sm{background:var(--s2);border:1px solid var(--b);border-radius:14px;padding:16px}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+.stat-card{background:var(--s2);border:1px solid var(--b);border-radius:14px;padding:16px;text-align:center}
+.stat-n{font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--a);line-height:1}
+.stat-l{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--t2);margin-top:4px}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:0 18px;height:40px;border-radius:100px;font-size:13px;font-weight:700;border:none;transition:all .15s;white-space:nowrap;letter-spacing:-.2px}
+.bp{background:var(--a);color:var(--at)}.bp:hover{background:var(--ah)}
+.bg{background:var(--s3);color:var(--t1)}.bg:hover{background:var(--s4)}
+.bo{background:transparent;color:var(--t1);border:1.5px solid var(--bm)}.bo:hover{border-color:var(--a);color:var(--a)}
+.bd{background:rgba(255,59,48,.12);color:var(--red)}.bd:hover{background:rgba(255,59,48,.22)}
+.bsm{height:32px;padding:0 12px;font-size:12px}
+.bicon{width:36px;height:36px;padding:0;border-radius:10px;background:var(--s3);border:none;color:var(--t1);display:inline-flex;align-items:center;justify-content:center}
+
+/* FIELDS */
+.fi{background:var(--s2);border:1.5px solid var(--b);border-radius:10px;padding:10px 14px;color:var(--t1);font-size:13px;font-family:inherit;transition:border-color .2s}
+.fi:focus{border-color:var(--a)}.fi::placeholder{color:var(--t3)}.fi option{background:#1a1a1a}
+.field-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;color:var(--t2);margin-bottom:6px;display:block}
+
+/* ROSTER TABLE */
+.table-wrap{overflow-x:auto;border-radius:16px;border:1px solid var(--b)}
+.roster-table{width:100%;border-collapse:collapse;font-size:13px}
+.roster-table th{padding:10px 14px;text-align:left;border-bottom:1px solid var(--b);font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.7px;color:var(--t2);background:var(--s2);white-space:nowrap}
+.roster-table td{padding:12px 14px;border-bottom:1px solid var(--b);vertical-align:middle}
+.roster-table tr:last-child td{border-bottom:none}
+.roster-table tr:hover td{background:rgba(255,255,255,.02)}
+.roster-table .name-cell{display:flex;align-items:center;gap:10px}
+.roster-av{width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0}
+
+/* PROGRESS BAR */
+.pbar{height:5px;background:var(--s3);border-radius:3px;overflow:hidden;margin-top:4px}
+.pbar-fill{height:100%;border-radius:3px;transition:width .6s ease}
+
+/* PILLS */
+.pill{display:inline-flex;align-items:center;padding:3px 9px;border-radius:100px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.4px}
+.pa{background:var(--ad);color:var(--a)}.pg{background:rgba(52,199,89,.12);color:var(--green)}
+.pr{background:rgba(255,59,48,.12);color:var(--red)}.po{background:rgba(255,159,10,.12);color:var(--orange)}
+.pb{background:rgba(10,132,255,.12);color:var(--blue)}.py{background:var(--s3);color:var(--t2)}
+.ppu{background:rgba(191,90,242,.12);color:var(--purple)}
+
+/* COACH CARD */
+.coach-assignment-card{background:var(--s2);border:1px solid var(--b);border-radius:14px;padding:16px;transition:border-color .18s}
+.coach-assignment-card:hover{border-color:var(--bm)}
+.coach-assignment-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-top:12px}
+
+/* MATCH SCORE BAR */
+.match-bar{height:6px;border-radius:3px;background:var(--s3);overflow:hidden;margin-top:6px}
+.match-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--orange),var(--a))}
+
+/* MODAL */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px);padding:20px}
+.modal.active{display:flex}
+.modal-box{background:var(--s1);border:1px solid var(--bm);border-radius:22px;padding:28px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;animation:popIn .22s cubic-bezier(.34,1.2,.64,1)}
+@keyframes popIn{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:scale(1)}}
+
+/* TOAST */
+#toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-80px);background:var(--s3);color:var(--t1);padding:12px 22px;border-radius:100px;font-size:13px;font-weight:700;z-index:999;transition:transform .3s cubic-bezier(.34,1.56,.64,1);white-space:nowrap;border:1px solid var(--bm);pointer-events:none}
+#toast.show{transform:translateX(-50%) translateY(0)}
+#toast.success{background:rgba(52,199,89,.15);color:var(--green);border-color:rgba(52,199,89,.3)}
+#toast.error{background:rgba(255,59,48,.15);color:var(--red);border-color:rgba(255,59,48,.3)}
+#toast.warn{background:rgba(255,159,10,.15);color:var(--orange);border-color:rgba(255,159,10,.3)}
+
+/* UTILS */
+.flex{display:flex}.aic{align-items:center}.jb{justify-content:space-between}.g8{gap:8px}.g12{gap:12px}.g16{gap:16px}
+.mt8{margin-top:8px}.mt12{margin-top:12px}.mt16{margin-top:16px}.mt20{margin-top:20px}.mt24{margin-top:24px}
+.mb8{margin-bottom:8px}.mb12{margin-bottom:12px}.mb16{margin-bottom:16px}.mb20{margin-bottom:20px}
+.fw{width:100%}.tc{text-align:center}
+.t-xl{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:1px;color:var(--a)}
+.t-lg{font-size:18px;font-weight:700;letter-spacing:-.3px}
+.t-md{font-size:15px;font-weight:600;letter-spacing:-.2px}
+.t-sm{font-size:13px}.t-xs{font-size:11px;text-transform:uppercase;letter-spacing:.7px;font-weight:700}
+.t2{color:var(--t2)}.accent{color:var(--a)}
+hr.line{border:none;border-top:1px solid var(--b);margin:16px 0}
+.badge{background:var(--red);color:#fff;border-radius:100px;font-size:10px;font-weight:800;padding:2px 7px}
+.at-risk{color:var(--orange)}
+.section-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.empty{text-align:center;padding:32px;color:var(--t2);font-size:13px}
+.chip{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:100px;background:var(--s3);color:var(--t2);font-size:11px;font-weight:600}
+</style>
+</head>
+<body>
+<div id="toast"></div>
+
+<!-- MODAL -->
+<div class="modal" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal-box" id="modal-box"></div>
+</div>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="flex aic g12">
+    <div class="logo">BIG NC <span>TENNIS</span></div>
+    <div style="background:var(--ad);color:var(--a);padding:4px 12px;border-radius:100px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.6px">Roster Manager</div>
+  </div>
+  <div class="flex aic g8">
+    <span class="t-sm t2" id="active-season-label">Loading…</span>
+    <button class="btn bp bsm" onclick="showModal('add-season')">+ New Season</button>
+    <a href="index.html" class="btn bg bsm" style="text-decoration:none">← App</a>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-section">Roster</div>
+    <button class="sbl active" id="sbl-roster" onclick="showPanel('roster',this)">
+      <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Student Roster
+    </button>
+    <button class="sbl" id="sbl-attendance" onclick="showPanel('attendance',this)">
+      <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      Attendance
+    </button>
+    <div class="sidebar-section">Staff</div>
+    <button class="sbl" id="sbl-assignments" onclick="showPanel('assignments',this)">
+      <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+      Staff Assignments
+    </button>
+    <button class="sbl" id="sbl-autoschedule" onclick="showPanel('autoschedule',this)">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+      Auto-Schedule
+    </button>
+    <div class="sidebar-section">Seasons</div>
+    <button class="sbl" id="sbl-seasons" onclick="showPanel('seasons',this)">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      Season Manager
+    </button>
+    <button class="sbl" id="sbl-analytics" onclick="showPanel('analytics',this)">
+      <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      Analytics
+    </button>
+  </aside>
+
+  <!-- CONTENT -->
+  <main class="content">
+
+    <!-- ════════ ROSTER ════════ -->
+    <div class="panel active" id="panel-roster">
+      <div class="flex aic jb mb20">
+        <div>
+          <div class="t-xl">Student Roster</div>
+          <p class="t-sm t2 mt8">All enrolled students for the selected season</p>
+        </div>
+        <div class="flex aic g8">
+          <select class="fi bsm" id="roster-season-select" onchange="renderRoster()" style="height:36px;padding:6px 12px;font-size:12px"></select>
+          <button class="btn bp bsm" onclick="showModal('enroll-student')">+ Enroll Student</button>
+        </div>
+      </div>
+
+      <!-- Stats row -->
+      <div class="stat-grid" id="roster-stats"></div>
+
+      <!-- Season progress -->
+      <div class="card mb20" id="season-progress-card"></div>
+
+      <!-- Roster table -->
+      <div class="section-hd">
+        <span class="t-xs t2">Enrolled Students</span>
+        <div class="flex aic g8">
+          <input class="fi bsm" id="roster-search" placeholder="Search name…" oninput="renderRoster()" style="width:160px">
+          <select class="fi bsm" id="roster-filter" onchange="renderRoster()" style="height:32px;font-size:12px;padding:0 10px">
+            <option value="all">All Levels</option>
+            <option value="beginner">Beginner</option>
+            <option value="intermediate">Intermediate</option>
+            <option value="advanced">Advanced</option>
+            <option value="elite">Elite</option>
+          </select>
+          <button class="btn bg bsm" onclick="exportRosterCSV()">↓ CSV</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table class="roster-table">
+          <thead><tr>
+            <th>Student</th><th>Level</th><th>Coach</th>
+            <th>Package</th><th>Attended</th><th>Remaining</th>
+            <th>Completion</th><th>Attendance %</th><th>All-Time</th><th>Actions</th>
+          </tr></thead>
+          <tbody id="roster-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ════════ ATTENDANCE ════════ -->
+    <div class="panel" id="panel-attendance">
+      <div class="flex aic jb mb20">
+        <div>
+          <div class="t-xl">Attendance</div>
+          <p class="t-sm t2 mt8">Mark attendance for each session · Track missed classes</p>
+        </div>
+        <select class="fi" id="att-season-select" onchange="renderAttendance()" style="height:38px;padding:8px 14px;font-size:13px"></select>
+      </div>
+      <div id="attendance-content"></div>
+    </div>
+
+    <!-- ════════ STAFF ASSIGNMENTS ════════ -->
+    <div class="panel" id="panel-assignments">
+      <div class="flex aic jb mb20">
+        <div>
+          <div class="t-xl">Staff Assignments</div>
+          <p class="t-sm t2 mt8">Coach ↔ Student assignments per season</p>
+        </div>
+        <div class="flex aic g8">
+          <select class="fi" id="assign-season-select" onchange="renderAssignments()" style="height:38px;padding:8px 14px;font-size:13px"></select>
+          <button class="btn bo bsm" onclick="runAutoSchedule(true)">⚡ Auto-Assign</button>
+        </div>
+      </div>
+      <div id="assignments-content"></div>
+    </div>
+
+    <!-- ════════ AUTO-SCHEDULE ════════ -->
+    <div class="panel" id="panel-autoschedule">
+      <div class="t-xl mb16">Auto-Schedule</div>
+      <p class="t-sm t2 mb20">Our matching algorithm pairs students to coaches based on level, specialty, age group, focus areas, and coach load balance.</p>
+
+      <div class="card mb20">
+        <div class="t-xs t2 mb12">Matching Formula Weights</div>
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:12px">
+          <div class="card-sm">
+            <div class="t-sm" style="font-weight:700">Level ↔ Specialty</div>
+            <div class="t-xs t2 mt8">Max 25 pts</div>
+            <div class="pbar mt8"><div class="pbar-fill" style="width:100%;background:var(--a)"></div></div>
+            <div class="t-xs t2 mt8">Elite + Competitive/Tournament = 25 · Beginner + Beginner Specialist = 25</div>
+          </div>
+          <div class="card-sm">
+            <div class="t-sm" style="font-weight:700">Age Group Match</div>
+            <div class="t-xs t2 mt8">Max 15 pts</div>
+            <div class="pbar mt8"><div class="pbar-fill" style="width:60%;background:var(--blue)"></div></div>
+            <div class="t-xs t2 mt8">Junior &lt;18 → Junior Development +15 · Senior &gt;55 → Adult Rec +15</div>
+          </div>
+          <div class="card-sm">
+            <div class="t-sm" style="font-weight:700">Focus Area Overlap</div>
+            <div class="t-xs t2 mt8">Max 15 pts</div>
+            <div class="pbar mt8"><div class="pbar-fill" style="width:60%;background:var(--purple)"></div></div>
+            <div class="t-xs t2 mt8">Serve focus + Serve &amp; Technique coach = +15 · Mental + Mental Game = +15</div>
+          </div>
+          <div class="card-sm">
+            <div class="t-sm" style="font-weight:700">Load Balance</div>
+            <div class="t-xs t2 mt8">Max 20 pts</div>
+            <div class="pbar mt8"><div class="pbar-fill" style="width:80%;background:var(--green)"></div></div>
+            <div class="t-xs t2 mt8">Coaches under capacity score higher · prevents single coach overload</div>
+          </div>
+          <div class="card-sm">
+            <div class="t-sm" style="font-weight:700">Experience Bonus</div>
+            <div class="t-xs t2 mt8">Max 10 pts</div>
+            <div class="pbar mt8"><div class="pbar-fill" style="width:40%;background:var(--orange)"></div></div>
+            <div class="t-xs t2 mt8">+1 pt per 2 years experience · caps at 10 pts</div>
+          </div>
+          <div class="card-sm" style="background:var(--ad);border-color:rgba(201,231,10,.3)">
+            <div class="t-sm accent" style="font-weight:700">Total Score</div>
+            <div class="t-xs t2 mt8">Max 100 pts</div>
+            <div class="pbar mt8"><div class="pbar-fill" style="width:100%;background:var(--a)"></div></div>
+            <div class="t-xs t2 mt8">Students ranked highest-score-first · elite/advanced placed first to secure best fits</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-hd">
+        <span class="t-xs t2">Run Auto-Schedule</span>
+        <div class="flex aic g8">
+          <select class="fi" id="as-season-select" style="height:36px;padding:6px 12px;font-size:12px"></select>
+          <button class="btn bp" onclick="runAutoSchedule(false)">⚡ Generate Schedule</button>
+        </div>
+      </div>
+      <div id="autoschedule-results" style="margin-top:16px"></div>
+    </div>
+
+    <!-- ════════ SEASONS ════════ -->
+    <div class="panel" id="panel-seasons">
+      <div class="flex aic jb mb20">
+        <div><div class="t-xl">Season Manager</div><p class="t-sm t2 mt8">Create, edit, archive, and roll over seasons</p></div>
+        <button class="btn bp" onclick="showModal('add-season')">+ New Season</button>
+      </div>
+      <div id="seasons-list" style="display:flex;flex-direction:column;gap:12px"></div>
+    </div>
+
+    <!-- ════════ ANALYTICS ════════ -->
+    <div class="panel" id="panel-analytics">
+      <div class="t-xl mb20">Analytics</div>
+      <div id="analytics-content"></div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+'use strict';
+// ── State ───────────────────────────────────────
+var activeSeason = SEASONS.find(s=>s.active) || SEASONS[SEASONS.length-1];
+var autoScheduleResults = [];
+
+// ── Init ────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', ()=>{
+  populateSeasonSelects();
+  renderRoster();
+  updateTopbarLabel();
+});
+
+function toast(msg, type=''){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className=type?`show ${type}`:'show';
+  clearTimeout(t._t); t._t=setTimeout(()=>t.className='',3200);
+}
+function openModal(html){document.getElementById('modal-box').innerHTML=html;document.getElementById('modal').classList.add('active');}
+function closeModal(){document.getElementById('modal').classList.remove('active');}
+
+function showPanel(id, btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.sbl').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-'+id).classList.add('active');
+  if(btn) btn.classList.add('active');
+  else {const b=document.getElementById('sbl-'+id);if(b)b.classList.add('active');}
+  if(id==='attendance')  renderAttendance();
+  if(id==='assignments') renderAssignments();
+  if(id==='seasons')     renderSeasons();
+  if(id==='analytics')   renderAnalytics();
+  if(id==='autoschedule')populateAS();
+}
+
+// ── Season selects ──────────────────────────────
+function populateSeasonSelects(){
+  ['roster-season-select','att-season-select','assign-season-select','as-season-select'].forEach(id=>{
+    const el=document.getElementById(id); if(!el)return;
+    el.innerHTML=SEASONS.map(s=>`<option value="${s.id}" ${s.id===activeSeason.id?'selected':''}>${s.name}${s.active?' ★':''}</option>`).join('');
+  });
+}
+function updateTopbarLabel(){
+  const lbl=document.getElementById('active-season-label');
+  if(lbl) lbl.textContent=`Active: ${activeSeason.name}`;
+}
+function selectedSeasonId(selectId){
+  const el=document.getElementById(selectId); return el?el.value:activeSeason.id;
+}
+
+// ══════════════════════════════════════
+// ROSTER
+// ══════════════════════════════════════
+function renderRoster(){
+  const sid    = selectedSeasonId('roster-season-select');
+  const season = SEASONS.find(s=>s.id===sid)||activeSeason;
+  const search = (document.getElementById('roster-search')||{}).value||'';
+  const filter = (document.getElementById('roster-filter')||{}).value||'all';
+
+  let enrolls = ENROLLMENTS.filter(e=>e.season_id===sid);
+  const summary = seasonRosterSummary(sid, ENROLLMENTS, DEMO_STUDENTS);
+
+  // Stats
+  const prog = seasonProgress(season);
+  document.getElementById('roster-stats').innerHTML=`
+    <div class="stat-card"><div class="stat-n">${enrolls.filter(e=>e.active).length}</div><div class="stat-l">Enrolled</div></div>
+    <div class="stat-card"><div class="stat-n">${enrolls.reduce((s,e)=>s+e.attended,0)}</div><div class="stat-l">Sessions Attended</div></div>
+    <div class="stat-card"><div class="stat-n">${summary.overallCompletionPct}%</div><div class="stat-l">Completion</div></div>
+    <div class="stat-card"><div class="stat-n" style="color:${summary.studentsAtRisk.length?'var(--orange)':'var(--green)'}">${summary.studentsAtRisk.length}</div><div class="stat-l">At-Risk (&lt;60%)</div></div>`;
+
+  // Season progress bar
+  document.getElementById('season-progress-card').innerHTML=`
+    <div class="flex aic jb mb8">
+      <span class="t-sm" style="font-weight:700">${season.name} — Season Progress</span>
+      <span class="t-sm t2">${season.start} → ${season.end}</span>
+    </div>
+    <div class="pbar" style="height:8px"><div class="pbar-fill" style="width:${prog}%;background:${season.color||'var(--a)'}"></div></div>
+    <div class="flex aic jb mt8">
+      <span class="t-xs t2">${prog}% of season elapsed</span>
+      <span class="t-xs t2">${season.archived?'Archived':season.active?'Active':'Upcoming'}</span>
+    </div>`;
+
+  // Filter & search
+  let rows = enrolls.filter(e=>e.active);
+  if(filter!=='all') rows=rows.filter(e=>{const s=DEMO_STUDENTS.find(st=>st.id===e.student_id);return s&&s.level===filter;});
+  if(search) rows=rows.filter(e=>{const s=DEMO_STUDENTS.find(st=>st.id===e.student_id);return s&&fullName(s).toLowerCase().includes(search.toLowerCase());});
+
+  const tbody = document.getElementById('roster-tbody');
+  if(!rows.length){tbody.innerHTML=`<tr><td colspan="10" class="empty">No students enrolled in this season</td></tr>`;return;}
+
+  tbody.innerHTML = rows.map(e=>{
+    const stu   = DEMO_STUDENTS.find(s=>s.id===e.student_id)||{};
+    const coach = DEMO_COACHES.find(c=>c.id===e.coach_id)||{};
+    const rem   = sessionsRemaining(e);
+    const comp  = enrollmentCompletion(e);
+    const rate  = attendanceRate(e.student_id, ATTENDANCE_RECORDS);
+    const allT  = allTimeAttendance(e.student_id, ENROLLMENTS);
+    const rateDisp = rate===null?'—':`${Math.round(rate*100)}%`;
+    const rateCls  = rate!==null&&rate<0.6?'at-risk':'';
+    const compColor= comp>=80?'var(--green)':comp>=50?'var(--a)':'var(--orange)';
+    const levelPill= {beginner:'pb',intermediate:'pa',advanced:'pg',elite:'ppu'}[stu.level]||'py';
+    return `<tr>
+      <td><div class="name-cell"><img src="${avatarURL(stu)}" class="roster-av"><div><div class="t-sm" style="font-weight:700">${fullName(stu)}</div><div class="t-xs t2">${stu.age||'—'} yrs · ${stu.gender||'—'}</div></div></div></td>
+      <td><span class="pill ${levelPill}">${stu.level||'—'}</span></td>
+      <td><div class="t-sm" style="font-weight:600">${coach.first_name||'—'} ${coach.last_name||''}</div><div class="t-xs t2">${coach.specialty||''}</div></td>
+      <td class="tc">${e.pkg}</td>
+      <td class="tc">${e.attended}</td>
+      <td class="tc" style="font-weight:700;color:${rem===0?'var(--red)':rem<=2?'var(--orange)':'var(--t1)'}">${rem}</td>
+      <td style="min-width:100px">
+        <div class="flex aic g8"><span class="t-sm" style="color:${compColor};font-weight:700">${comp}%</span></div>
+        <div class="pbar"><div class="pbar-fill" style="width:${comp}%;background:${compColor}"></div></div>
+      </td>
+      <td class="tc ${rateCls}" style="font-weight:700">${rateDisp}${rate!==null&&rate<0.6?' ⚠':''}</td>
+      <td class="tc">${allT}</td>
+      <td>
+        <div class="flex aic g8">
+          <button class="btn bsm bg" onclick="showEditEnrollment('${e.id}')">Edit</button>
+          <button class="btn bsm bd" onclick="confirmUnenroll('${e.id}','${fullName(stu)}')">Remove</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function showEditEnrollment(enrollId){
+  const en=ENROLLMENTS.find(e=>e.id===enrollId);if(!en)return;
+  const stu=DEMO_STUDENTS.find(s=>s.id===en.student_id)||{};
+  const coach=DEMO_COACHES.find(c=>c.id===en.coach_id)||{};
+  openModal(`
+    <div class="t-lg mb16">Edit Enrollment — ${fullName(stu)}</div>
+    <div class="mb12"><span class="field-label">Assigned Coach</span>
+      <select id="ee-coach" class="fi fw">${DEMO_COACHES.map(c=>`<option value="${c.id}"${c.id===en.coach_id?' selected':''}>${c.first_name} ${c.last_name} — ${c.specialty}</option>`).join('')}</select>
+    </div>
+    <div class="mb12"><span class="field-label">Package (sessions)</span>
+      <input id="ee-pkg" type="number" class="fi fw" value="${en.pkg}" min="${en.attended}" max="52">
+    </div>
+    <div class="mb16"><span class="field-label">Sessions Attended</span>
+      <input id="ee-att" type="number" class="fi fw" value="${en.attended}" min="0" max="${en.pkg}">
+    </div>
+    <div class="flex g8">
+      <button class="btn bp fw" onclick="saveEnrollmentEdit('${enrollId}')">Save Changes</button>
+      <button class="btn bg" onclick="closeModal()">Cancel</button>
+    </div>`);
+}
+function saveEnrollmentEdit(enrollId){
+  const en=ENROLLMENTS.find(e=>e.id===enrollId);if(!en)return;
+  const pkg=parseInt(document.getElementById('ee-pkg').value);
+  const att=parseInt(document.getElementById('ee-att').value);
+  const coachId=document.getElementById('ee-coach').value;
+  if(isNaN(pkg)||pkg<1){toast('Package must be at least 1','error');return;}
+  if(isNaN(att)||att<0){toast('Attended cannot be negative','error');return;}
+  if(att>pkg){toast('Attended cannot exceed package','error');return;}
+  const res=updatePackage(enrollId,pkg);
+  if(!res.success){toast(res.error,'error');return;}
+  en.attended=att; en.coach_id=coachId;
+  // Update staff assignment
+  STAFF_ASSIGNMENTS.forEach(sa=>{
+    if(sa.season_id===en.season_id){
+      sa.student_ids=sa.student_ids.filter(id=>id!==en.student_id);
+    }
+    if(sa.coach_id===coachId&&sa.season_id===en.season_id){
+      if(!sa.student_ids.includes(en.student_id))sa.student_ids.push(en.student_id);
+    }
+  });
+  closeModal(); renderRoster(); toast('Enrollment updated ✓','success');
+}
+function confirmUnenroll(enrollId, name){
+  openModal(`
+    <div class="t-lg mb12">Remove ${name}?</div>
+    <p class="t-sm t2 mb20">This will deactivate their enrollment for this season. Their attendance history will be preserved.</p>
+    <div class="flex g8">
+      <button class="btn bd fw" onclick="doUnenroll('${enrollId}')">Remove Student</button>
+      <button class="btn bg fw" onclick="closeModal()">Cancel</button>
+    </div>`);
+}
+function doUnenroll(enrollId){
+  const res=unenrollStudent(enrollId);
+  if(!res.success){toast(res.error,'error');return;}
+  closeModal(); renderRoster(); toast('Student removed from season','error');
+}
+
+// Enroll new student
+function showModal(type){
+  if(type==='enroll-student'){
+    const sid=selectedSeasonId('roster-season-select');
+    const enrolled=ENROLLMENTS.filter(e=>e.season_id===sid&&e.active).map(e=>e.student_id);
+    const avail=DEMO_STUDENTS.filter(s=>!enrolled.includes(s.id));
+    if(!avail.length){toast('All students are already enrolled in this season','warn');return;}
+    openModal(`
+      <div class="t-lg mb16">Enroll Student</div>
+      <div class="mb12"><span class="field-label">Student</span>
+        <select id="ns-student" class="fi fw" onchange="suggestCoach()">${avail.map(s=>`<option value="${s.id}">${fullName(s)} — ${levelLabel(s.level)}</option>`).join('')}</select>
+      </div>
+      <div class="mb12"><span class="field-label">Assigned Coach <span class="t-xs" style="color:var(--a);text-transform:none;letter-spacing:0"> (auto-suggested)</span></span>
+        <select id="ns-coach" class="fi fw">${DEMO_COACHES.map(c=>`<option value="${c.id}">${c.first_name} ${c.last_name} — ${c.specialty}</option>`).join('')}</select>
+      </div>
+      <div class="mb16"><span class="field-label">Package (sessions)</span>
+        <input id="ns-pkg" type="number" class="fi fw" value="8" min="1" max="52">
+      </div>
+      <div id="ns-match-info" style="margin-bottom:16px"></div>
+      <div class="flex g8">
+        <button class="btn bp fw" onclick="doEnroll('${sid}')">Enroll Student</button>
+        <button class="btn bg" onclick="closeModal()">Cancel</button>
+      </div>`);
+    suggestCoach();
+  }
+  if(type==='add-season'){
+    openModal(`
+      <div class="t-lg mb16">Create New Season</div>
+      <div class="mb12"><span class="field-label">Season Name</span>
+        <input id="ns-name" type="text" class="fi fw" placeholder="e.g. Summer 2026"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px" class="mb12">
+        <div><span class="field-label">Start Date</span><input id="ns-start" type="date" class="fi fw"></div>
+        <div><span class="field-label">End Date</span><input id="ns-end" type="date" class="fi fw"></div>
+      </div>
+      <div class="mb16"><span class="field-label">Color</span>
+        <input id="ns-color" type="color" value="#C9E70A" style="width:60px;height:36px;border:none;background:none;cursor:pointer;padding:0">
+      </div>
+      <div class="flex g8">
+        <button class="btn bp fw" onclick="doAddSeason()">Create Season</button>
+        <button class="btn bg" onclick="closeModal()">Cancel</button>
+      </div>`);
+  }
+}
+
+function suggestCoach(){
+  const stuId=document.getElementById('ns-student')?.value;
+  const stu=DEMO_STUDENTS.find(s=>s.id===stuId);if(!stu)return;
+  const sid=selectedSeasonId('roster-season-select');
+  const loads={};
+  DEMO_COACHES.forEach(c=>{loads[c.id]=ENROLLMENTS.filter(e=>e.season_id===sid&&e.coach_id===c.id&&e.active).length;});
+  const scored=DEMO_COACHES.map(c=>({c,score:scoreCoachStudentPair(c,stu,loads[c.id]||0,8)})).sort((a,b)=>b.score-a.score);
+  const best=scored[0];
+  const coachSel=document.getElementById('ns-coach');
+  if(coachSel)coachSel.value=best.c.id;
+  const info=document.getElementById('ns-match-info');
+  if(info)info.innerHTML=`
+    <div class="card-sm" style="background:var(--ad);border-color:rgba(201,231,10,.3)">
+      <div class="t-xs accent mb8">Suggested Match</div>
+      <div class="flex aic jb">
+        <span class="t-sm" style="font-weight:700">Coach ${best.c.first_name} ${best.c.last_name}</span>
+        <span class="t-sm accent" style="font-weight:800">${best.score}/100</span>
+      </div>
+      <div class="t-xs t2 mt8">${buildMatchReason(stu,best.c,best.score)}</div>
+      <div class="match-bar mt8"><div class="match-fill" style="width:${best.score}%"></div></div>
+    </div>`;
+}
+
+function doEnroll(seasonId){
+  const stuId=document.getElementById('ns-student').value;
+  const coachId=document.getElementById('ns-coach').value;
+  const pkg=parseInt(document.getElementById('ns-pkg').value);
+  const res=enrollStudent(seasonId,stuId,coachId,pkg);
+  if(!res.success){toast(res.errors.join(', '),'error');return;}
+  // Update staff assignment
+  const sa=STAFF_ASSIGNMENTS.find(s=>s.season_id===seasonId&&s.coach_id===coachId);
+  if(sa){if(!sa.student_ids.includes(stuId))sa.student_ids.push(stuId);}
+  else{STAFF_ASSIGNMENTS.push({id:'sa'+Date.now(),season_id:seasonId,coach_id:coachId,student_ids:[stuId],max_students:8,role:'Coach'});}
+  closeModal(); renderRoster(); toast(`Student enrolled successfully ✓`,'success');
+}
+
+function doAddSeason(){
+  const name=document.getElementById('ns-name')?.value?.trim();
+  const start=document.getElementById('ns-start')?.value;
+  const end=document.getElementById('ns-end')?.value;
+  const color=document.getElementById('ns-color')?.value||'#C9E70A';
+  if(!name||!start||!end){toast('Fill in all fields','error');return;}
+  if(start>=end){toast('Start must be before end date','error');return;}
+  const newSeason={id:'sea'+Date.now(),name,start,end,color,archived:false,active:false};
+  SEASONS.push(newSeason);
+  closeModal(); populateSeasonSelects(); renderSeasons(); toast(`Season "${name}" created ✓`,'success');
+}
+
+function exportRosterCSV(){
+  const sid=selectedSeasonId('roster-season-select');
+  const season=SEASONS.find(s=>s.id===sid)||activeSeason;
+  const rows=ENROLLMENTS.filter(e=>e.season_id===sid&&e.active);
+  const headers='Name,Level,Coach,Package,Attended,Remaining,Completion%,AttendanceRate%,AllTimeAttended';
+  const lines=rows.map(e=>{
+    const stu=DEMO_STUDENTS.find(s=>s.id===e.student_id)||{};
+    const coach=DEMO_COACHES.find(c=>c.id===e.coach_id)||{};
+    const rate=attendanceRate(e.student_id,ATTENDANCE_RECORDS);
+    return [fullName(stu),stu.level,`${coach.first_name} ${coach.last_name}`,e.pkg,e.attended,sessionsRemaining(e),enrollmentCompletion(e),rate===null?'—':Math.round(rate*100),allTimeAttendance(e.student_id,ENROLLMENTS)].join(',');
+  });
+  const csv=[headers,...lines].join('\n');
+  const blob=new Blob([csv],{type:'text/csv'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download=`roster-${season.name.replace(/\s/g,'-')}.csv`;
+  document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(url);
+  toast('Roster exported as CSV ↓','success');
+}
+
+// ══════════════════════════════════════
+// ATTENDANCE
+// ══════════════════════════════════════
+function renderAttendance(){
+  const sid=selectedSeasonId('att-season-select');
+  const sessions=DEMO_SESSIONS.filter(s=>{
+    const en=ENROLLMENTS.find(e=>e.season_id===sid&&e.student_id===s.student_id&&e.active);
+    return !!en;
+  }).sort((a,b)=>new Date(b.date)-new Date(a.date));
+
+  const content=document.getElementById('attendance-content');
+  if(!sessions.length){content.innerHTML='<div class="empty">No sessions found for this season</div>';return;}
+
+  // Group by date
+  const byDate={};
+  sessions.forEach(s=>{if(!byDate[s.date])byDate[s.date]=[];byDate[s.date].push(s);});
+
+  content.innerHTML=Object.entries(byDate).sort(([a],[b])=>b.localeCompare(a)).map(([date,sessList])=>{
+    const d=new Date(date+'T00:00:00');
+    const fmtDate=d.toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+    return`<div class="card mb16">
+      <div class="flex aic jb mb12">
+        <div><div class="t-md">${fmtDate}</div><div class="t-xs t2 mt8">${sessList.length} session${sessList.length!==1?'s':''}</div></div>
+      </div>
+      <div class="table-wrap"><table class="roster-table">
+        <thead><tr><th>Student</th><th>Coach</th><th>Type</th><th>Status</th><th>Attendance</th><th>Mark</th></tr></thead>
+        <tbody>${sessList.map(s=>{
+          const stu=DEMO_STUDENTS.find(st=>st.id===s.student_id)||{};
+          const coach=DEMO_COACHES.find(c=>c.id===s.coach_id)||{};
+          const rec=ATTENDANCE_RECORDS.find(r=>r.session_id===s.id&&r.student_id===s.student_id);
+          const attended=rec?rec.attended:null;
+          const isPast=new Date(s.date+'T00:00:00')<new Date();
+          return`<tr>
+            <td><div class="name-cell"><img src="${avatarURL(stu)}" class="roster-av"><span class="t-sm" style="font-weight:600">${fullName(stu)}</span></div></td>
+            <td class="t-sm">${coach.first_name||'—'} ${coach.last_name||''}</td>
+            <td><span class="pill py">${s.type}</span></td>
+            <td><span class="pill ${s.status==='upcoming'?'pa':'pg'}">${s.status}</span></td>
+            <td>${attended===null?'<span class="t-xs t2">—</span>':attended?'<span class="pill pg">✓ Present</span>':'<span class="pill pr">✗ Absent</span>'}</td>
+            <td><div class="flex aic g8">
+              <button class="btn bsm" style="background:rgba(52,199,89,.15);color:var(--green)" onclick="markAtt('${s.id}','${s.student_id}','${s.coach_id}','${s.date}',true)">✓ Present</button>
+              <button class="btn bsm" style="background:rgba(255,59,48,.12);color:var(--red)" onclick="markAtt('${s.id}','${s.student_id}','${s.coach_id}','${s.date}',false)">✗ Absent</button>
+            </div></td>
+          </tr>`;
+        }).join('')}</tbody>
+      </table></div>
+    </div>`;
+  }).join('');
+}
+
+function markAtt(sessId,stuId,coachId,date,attended){
+  markAttendance(sessId,stuId,coachId,date,attended);
+  const stu=DEMO_STUDENTS.find(s=>s.id===stuId);
+  toast(`${fullName(stu)||'Student'} marked ${attended?'present':'absent'} ✓`, attended?'success':'warn');
+  renderAttendance();
+}
+
+// ══════════════════════════════════════
+// STAFF ASSIGNMENTS
+// ══════════════════════════════════════
+function renderAssignments(){
+  const sid=selectedSeasonId('assign-season-select');
+  const content=document.getElementById('assignments-content');
+  const loads=coachLoadSummary(sid,ENROLLMENTS,DEMO_COACHES);
+
+  content.innerHTML=`
+    <div class="coach-assignment-grid">
+      ${loads.map(l=>{
+        const sa=STAFF_ASSIGNMENTS.find(s=>s.season_id===sid&&s.coach_id===l.coach.id);
+        const stuIds=sa?sa.student_ids:[];
+        const maxStu=sa?sa.max_students:8;
+        const fillPct=Math.round((stuIds.length/maxStu)*100);
+        const loadColor=fillPct>85?'var(--red)':fillPct>60?'var(--orange)':'var(--green)';
+        return`<div class="coach-assignment-card">
+          <div class="flex aic jb mb12">
+            <div class="flex aic g8">
+              <img src="${l.coach.avatar||avatarURL(l.coach)}" style="width:40px;height:40px;border-radius:50%;object-fit:cover">
+              <div>
+                <div class="t-sm" style="font-weight:700">${l.coach.first_name} ${l.coach.last_name}</div>
+                <div class="t-xs t2">${l.coach.specialty}</div>
+              </div>
+            </div>
+            <span class="pill ${fillPct>85?'pr':fillPct>60?'po':'pg'}">${stuIds.length}/${maxStu}</span>
+          </div>
+          <div class="pbar mb12"><div class="pbar-fill" style="width:${fillPct}%;background:${loadColor}"></div></div>
+          <div class="t-xs t2 mb8">Students assigned:</div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px">
+            ${stuIds.length?stuIds.map(id=>{
+              const s=DEMO_STUDENTS.find(st=>st.id===id)||{};
+              return`<div class="chip" style="cursor:pointer" title="${levelLabel(s.level)}">${fullName(s)||id}</div>`;
+            }).join(''):('<span class="t-xs t2">None assigned</span>')}
+          </div>
+          <div class="flex aic jb mt12">
+            <span class="t-xs t2">${l.completedSessions}/${l.totalSessions} sessions completed</span>
+            <span class="t-xs" style="color:var(--a);font-weight:700">${l.utilizationPct}% util.</span>
+          </div>
+          <div class="flex g8 mt12">
+            <button class="btn bsm bg fw" onclick="editMaxStudents('${sa?.id||''}','${l.coach.id}','${sid}',${maxStu})">Set Max</button>
+            <button class="btn bsm bo fw" onclick="reassignStudent('${l.coach.id}','${sid}')">Reassign</button>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>`;
+}
+
+function editMaxStudents(saId,coachId,seasonId,current){
+  const coach=DEMO_COACHES.find(c=>c.id===coachId)||{};
+  openModal(`
+    <div class="t-lg mb12">Max Students — ${coach.first_name} ${coach.last_name}</div>
+    <p class="t-sm t2 mb16">Set the maximum number of students this coach can handle per season.</p>
+    <input id="max-stu-val" type="number" class="fi fw mb16" value="${current}" min="1" max="30">
+    <div class="flex g8">
+      <button class="btn bp fw" onclick="saveMaxStudents('${saId}','${coachId}','${seasonId}')">Save</button>
+      <button class="btn bg" onclick="closeModal()">Cancel</button>
+    </div>`);
+}
+function saveMaxStudents(saId,coachId,seasonId){
+  const val=parseInt(document.getElementById('max-stu-val')?.value);
+  if(isNaN(val)||val<1){toast('Invalid value','error');return;}
+  const sa=STAFF_ASSIGNMENTS.find(s=>s.id===saId||(s.coach_id===coachId&&s.season_id===seasonId));
+  if(sa)sa.max_students=val;
+  closeModal();renderAssignments();toast('Max students updated ✓','success');
+}
+function reassignStudent(fromCoachId,seasonId){
+  const sa=STAFF_ASSIGNMENTS.find(s=>s.season_id===seasonId&&s.coach_id===fromCoachId);
+  const stuIds=sa?sa.student_ids:[];
+  const avail=stuIds.map(id=>DEMO_STUDENTS.find(s=>s.id===id)).filter(Boolean);
+  openModal(`
+    <div class="t-lg mb12">Reassign Student</div>
+    <div class="mb12"><span class="field-label">Student to Reassign</span>
+      <select id="rs-stu" class="fi fw">${avail.map(s=>`<option value="${s.id}">${fullName(s)}</option>`).join('')}</select>
+    </div>
+    <div class="mb16"><span class="field-label">Move to Coach</span>
+      <select id="rs-coach" class="fi fw">${DEMO_COACHES.filter(c=>c.id!==fromCoachId).map(c=>`<option value="${c.id}">${c.first_name} ${c.last_name} — ${c.specialty}</option>`).join('')}</select>
+    </div>
+    <div class="flex g8">
+      <button class="btn bp fw" onclick="doReassign('${fromCoachId}','${seasonId}')">Reassign</button>
+      <button class="btn bg" onclick="closeModal()">Cancel</button>
+    </div>`);
+}
+function doReassign(fromCoachId,seasonId){
+  const stuId=document.getElementById('rs-stu')?.value;
+  const toCoachId=document.getElementById('rs-coach')?.value;
+  // Remove from old
+  const fromSA=STAFF_ASSIGNMENTS.find(s=>s.season_id===seasonId&&s.coach_id===fromCoachId);
+  if(fromSA)fromSA.student_ids=fromSA.student_ids.filter(id=>id!==stuId);
+  // Add to new
+  let toSA=STAFF_ASSIGNMENTS.find(s=>s.season_id===seasonId&&s.coach_id===toCoachId);
+  if(!toSA){toSA={id:'sa'+Date.now(),season_id:seasonId,coach_id:toCoachId,student_ids:[],max_students:8,role:'Coach'};STAFF_ASSIGNMENTS.push(toSA);}
+  if(!toSA.student_ids.includes(stuId))toSA.student_ids.push(stuId);
+  // Update enrollment
+  const en=ENROLLMENTS.find(e=>e.season_id===seasonId&&e.student_id===stuId&&e.active);
+  if(en)en.coach_id=toCoachId;
+  const stu=DEMO_STUDENTS.find(s=>s.id===stuId)||{};
+  const toCoach=DEMO_COACHES.find(c=>c.id===toCoachId)||{};
+  closeModal();renderAssignments();toast(`${fullName(stu)} reassigned to ${toCoach.first_name} ✓`,'success');
+}
+
+// ══════════════════════════════════════
+// AUTO-SCHEDULE
+// ══════════════════════════════════════
+function populateAS(){
+  const sel=document.getElementById('as-season-select');
+  if(sel)sel.innerHTML=SEASONS.map(s=>`<option value="${s.id}"${s.id===activeSeason.id?' selected':''}>${s.name}</option>`).join('');
+}
+function runAutoSchedule(apply){
+  const sid=document.getElementById('as-season-select')?.value||activeSeason.id;
+  const enrolled=ENROLLMENTS.filter(e=>e.season_id===sid&&e.active).map(e=>DEMO_STUDENTS.find(s=>s.id===e.student_id)).filter(Boolean);
+  if(!enrolled.length){toast('No students enrolled in this season','warn');return;}
+  const results=autoScheduleSeason(sid,enrolled,DEMO_COACHES,ENROLLMENTS);
+  autoScheduleResults=results;
+
+  if(apply){
+    // Apply assignments back to enrollments and STAFF_ASSIGNMENTS
+    results.forEach(r=>{
+      const en=ENROLLMENTS.find(e=>e.season_id===sid&&e.student_id===r.student.id&&e.active);
+      if(en)en.coach_id=r.coach.id;
+    });
+    // Rebuild staff assignments
+    STAFF_ASSIGNMENTS.filter(s=>s.season_id===sid).forEach(s=>s.student_ids=[]);
+    results.forEach(r=>{
+      let sa=STAFF_ASSIGNMENTS.find(s=>s.season_id===sid&&s.coach_id===r.coach.id);
+      if(!sa){sa={id:'sa'+Date.now(),season_id:sid,coach_id:r.coach.id,student_ids:[],max_students:8,role:'Coach'};STAFF_ASSIGNMENTS.push(sa);}
+      if(!sa.student_ids.includes(r.student.id))sa.student_ids.push(r.student.id);
+    });
+    renderRoster();renderAssignments();
+    toast(`Auto-schedule applied: ${results.length} assignments updated ✓`,'success');
+    showPanel('assignments');return;
+  }
+
+  // Show preview
+  const el=document.getElementById('autoschedule-results');
+  const avgScore=results.reduce((s,r)=>s+r.score,0)/results.length;
+  el.innerHTML=`
+    <div class="card mb16">
+      <div class="flex aic jb">
+        <div><div class="t-md" style="font-weight:700">${results.length} assignments generated</div><div class="t-xs t2 mt8">Average match score: <span class="accent">${avgScore.toFixed(0)}/100</span></div></div>
+        <button class="btn bp" onclick="runAutoSchedule(true)">✓ Apply Schedule</button>
+      </div>
+    </div>
+    <div class="table-wrap"><table class="roster-table">
+      <thead><tr><th>Student</th><th>Level</th><th>→ Coach</th><th>Specialty</th><th>Score</th><th>Match Reason</th></tr></thead>
+      <tbody>${results.map(r=>{
+        const lvlPill={beginner:'pb',intermediate:'pa',advanced:'pg',elite:'ppu'}[r.student.level]||'py';
+        const scoreColor=r.score>=70?'var(--green)':r.score>=45?'var(--a)':'var(--orange)';
+        return`<tr>
+          <td><div class="name-cell"><img src="${avatarURL(r.student)}" class="roster-av"><span class="t-sm" style="font-weight:600">${fullName(r.student)}</span></div></td>
+          <td><span class="pill ${lvlPill}">${r.student.level}</span></td>
+          <td><div class="t-sm" style="font-weight:700">${r.coach.first_name} ${r.coach.last_name}</div></td>
+          <td class="t-sm t2">${r.coach.specialty}</td>
+          <td><span style="color:${scoreColor};font-weight:800;font-size:14px">${r.score}</span><span class="t-xs t2">/100</span>
+            <div class="match-bar" style="width:80px"><div class="match-fill" style="width:${r.score}%"></div></div>
+          </td>
+          <td class="t-sm t2">${r.reason}</td>
+        </tr>`;
+      }).join('')}</tbody>
+    </table></div>`;
+}
+
+// ══════════════════════════════════════
+// SEASONS
+// ══════════════════════════════════════
+function renderSeasons(){
+  const list=document.getElementById('seasons-list');
+  list.innerHTML=[...SEASONS].reverse().map(s=>{
+    const enrollCount=ENROLLMENTS.filter(e=>e.season_id===s.id&&e.active).length;
+    const prog=seasonProgress(s);
+    const statusPill=s.archived?'py':s.active?'pg':'pb';
+    const statusLabel=s.archived?'Archived':s.active?'Active':'Upcoming';
+    return`<div class="card">
+      <div class="flex aic jb mb12">
+        <div class="flex aic g12">
+          <div style="width:16px;height:16px;border-radius:50%;background:${s.color||'var(--a)'}"></div>
+          <div><div class="t-md" style="font-weight:700">${s.name}</div><div class="t-xs t2 mt8">${s.start} → ${s.end}</div></div>
+        </div>
+        <div class="flex aic g8">
+          <span class="pill ${statusPill}">${statusLabel}</span>
+          <span class="chip">${enrollCount} students</span>
+        </div>
+      </div>
+      <div class="pbar mb12"><div class="pbar-fill" style="width:${prog}%;background:${s.color||'var(--a)'}"></div></div>
+      <div class="flex aic jb">
+        <div class="flex g8">
+          ${!s.active&&!s.archived?`<button class="btn bsm bp" onclick="setActiveSeason('${s.id}')">Set Active</button>`:''}
+          ${!s.archived?`<button class="btn bsm bg" onclick="showRolloverModal('${s.id}')">Roll Over →</button>`:''}
+          ${!s.active&&!s.archived?`<button class="btn bsm bd" onclick="archiveSeason('${s.id}')">Archive</button>`:''}
+        </div>
+        <span class="t-xs t2">${prog}% elapsed</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+function setActiveSeason(id){
+  SEASONS.forEach(s=>s.active=false);
+  const s=SEASONS.find(x=>x.id===id);if(s){s.active=true;activeSeason=s;}
+  populateSeasonSelects();updateTopbarLabel();renderSeasons();toast(`${s?.name} is now the active season ✓`,'success');
+}
+function archiveSeason(id){
+  const s=SEASONS.find(x=>x.id===id);if(s){s.archived=true;s.active=false;}
+  renderSeasons();toast('Season archived','warn');
+}
+function showRolloverModal(fromId){
+  const fromSeason=SEASONS.find(s=>s.id===fromId);
+  const future=SEASONS.filter(s=>!s.archived&&s.id!==fromId);
+  if(!future.length){toast('No future seasons to roll over to — create one first','warn');return;}
+  const enrolled=ENROLLMENTS.filter(e=>e.season_id===fromId&&e.active);
+  openModal(`
+    <div class="t-lg mb8">Season Rollover</div>
+    <p class="t-sm t2 mb16">Copy enrolled students from <strong style="color:var(--t1)">${fromSeason?.name}</strong> to another season. Attendance resets to 0, packages carry over.</p>
+    <div class="mb12"><span class="field-label">Roll over to</span>
+      <select id="ro-to" class="fi fw">${future.map(s=>`<option value="${s.id}">${s.name}</option>`).join('')}</select>
+    </div>
+    <p class="t-sm t2 mb16">${enrolled.length} active students will be rolled over.</p>
+    <div class="flex g8">
+      <button class="btn bp fw" onclick="doRollover('${fromId}')">Roll Over ${enrolled.length} Students</button>
+      <button class="btn bg" onclick="closeModal()">Cancel</button>
+    </div>`);
+}
+function doRollover(fromId){
+  const toId=document.getElementById('ro-to')?.value;
+  if(!toId){closeModal();return;}
+  const res=rolloverSeason(fromId,toId,null);
+  closeModal();populateSeasonSelects();renderSeasons();
+  toast(`Rolled over ${res.created} students (${res.skipped} already enrolled) ✓`,'success');
+}
+
+// ══════════════════════════════════════
+// ANALYTICS
+// ══════════════════════════════════════
+function renderAnalytics(){
+  const content=document.getElementById('analytics-content');
+  const allSeasons=SEASONS.filter(s=>!s.archived||ENROLLMENTS.some(e=>e.season_id===s.id));
+
+  // Most active students
+  const stuActivity=DEMO_STUDENTS.map(s=>({stu:s,total:allTimeAttendance(s.id,ENROLLMENTS)})).sort((a,b)=>b.total-a.total).slice(0,10);
+  // Coach utilization Spring 2026
+  const loads=coachLoadSummary(activeSeason.id,ENROLLMENTS,DEMO_COACHES);
+  // Season summaries
+  const seasonSums=SEASONS.map(s=>({season:s,summary:seasonRosterSummary(s.id,ENROLLMENTS,DEMO_STUDENTS)}));
+
+  content.innerHTML=`
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px">
+      <div class="stat-card"><div class="stat-n">${DEMO_STUDENTS.length}</div><div class="stat-l">Total Students</div></div>
+      <div class="stat-card"><div class="stat-n">${ENROLLMENTS.reduce((s,e)=>s+e.attended,0)}</div><div class="stat-l">All-Time Sessions</div></div>
+      <div class="stat-card"><div class="stat-n">${Math.round(ENROLLMENTS.filter(e=>e.pkg>0).reduce((s,e)=>s+(e.attended/e.pkg),0)/ENROLLMENTS.filter(e=>e.pkg>0).length*100)}%</div><div class="stat-l">Avg Completion</div></div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+      <div class="card">
+        <div class="t-xs t2 mb12">Top 10 Most Active Students</div>
+        ${stuActivity.map((x,i)=>`<div class="flex aic jb" style="padding:8px 0;border-bottom:1px solid var(--b)">
+          <div class="flex aic g8">
+            <span class="t-xs" style="color:var(--t3);width:20px">${i+1}</span>
+            <img src="${avatarURL(x.stu)}" style="width:28px;height:28px;border-radius:50%;object-fit:cover">
+            <span class="t-sm" style="font-weight:600">${fullName(x.stu)}</span>
+          </div>
+          <span class="t-sm accent" style="font-weight:800">${x.total} sessions</span>
+        </div>`).join('')}
+      </div>
+
+      <div class="card">
+        <div class="t-xs t2 mb12">Coach Utilization — ${activeSeason.name}</div>
+        ${loads.map(l=>`<div class="flex aic jb" style="padding:8px 0;border-bottom:1px solid var(--b)">
+          <div><div class="t-sm" style="font-weight:600">${l.coach.first_name} ${l.coach.last_name}</div>
+          <div class="t-xs t2">${l.studentCount} students · ${l.completedSessions}/${l.totalSessions} sessions</div></div>
+          <div style="text-align:right"><div class="t-sm" style="font-weight:700;color:${l.utilizationPct>=80?'var(--green)':l.utilizationPct>=50?'var(--a)':'var(--orange)'}">${l.utilizationPct}%</div>
+          <div class="pbar" style="width:80px;margin-top:4px"><div class="pbar-fill" style="width:${l.utilizationPct}%;background:${l.utilizationPct>=80?'var(--green)':'var(--a)'}"></div></div>
+          </div>
+        </div>`).join('')}
+      </div>
+    </div>
+
+    <div class="card mt20">
+      <div class="t-xs t2 mb12">Season Overview</div>
+      <div class="table-wrap" style="border:none">
+        <table class="roster-table">
+          <thead><tr><th>Season</th><th>Status</th><th>Students</th><th>Sessions Attended</th><th>Completion</th><th>At-Risk</th></tr></thead>
+          <tbody>${seasonSums.map(({season,summary})=>`<tr>
+            <td><div class="flex aic g8"><div style="width:10px;height:10px;border-radius:50%;background:${season.color||'var(--a)'}"></div><span class="t-sm" style="font-weight:600">${season.name}</span></div></td>
+            <td><span class="pill ${season.archived?'py':season.active?'pg':'pb'}">${season.archived?'Archived':season.active?'Active':'Upcoming'}</span></td>
+            <td class="tc">${summary.activeStudents}</td>
+            <td class="tc">${summary.totalAttended}</td>
+            <td class="tc" style="font-weight:700;color:${summary.overallCompletionPct>=70?'var(--green)':'var(--a)'}">${summary.overallCompletionPct}%</td>
+            <td class="tc" style="color:${summary.studentsAtRisk.length?'var(--orange)':'var(--green)';font-weight:700}">${summary.studentsAtRisk.length}</td>
+          </tr>`).join('')}</tbody>
+        </table>
+      </div>
+    </div>`;
+}
+</script>
+</body>
+</html>
