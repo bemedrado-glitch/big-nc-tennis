@@ -237,6 +237,7 @@
       <div class="tab" data-tab="landing">Landing Page</div>
       <div class="tab" data-tab="features">Features</div>
       <div class="tab" data-tab="demo">Demo Suite</div>
+      <div class="tab" data-tab="admin">Admin Suite</div>
       <div class="tab" data-tab="strategy">Strategy</div>
       <div class="tab" data-tab="proposal">Proposal</div>
     </div>
@@ -319,6 +320,7 @@
       <div class="feat"><div class="feat-icon">🏠</div><h4>Landing Page Preview</h4><p>Live mock of the new homepage with real brand tokens, programs, testimonials, and conversion hooks.</p><div class="feat-tag">TAB: LANDING</div></div>
       <div class="feat"><div class="feat-icon">⚡</div><h4>Feature Catalog</h4><p>Every piece of functionality — including live scores, coach scheduling, bracket builder, AI coaching, shop, blog, and more.</p><div class="feat-tag">TAB: FEATURES</div></div>
       <div class="feat"><div class="feat-icon">🧪</div><h4>Working Demos</h4><p>Member portal. Booking calendar. AI coaching plan. Live score ticker. Tournament bracket. All clickable.</p><div class="feat-tag">TAB: DEMO SUITE</div></div>
+      <div class="feat"><div class="feat-icon">🏢</div><h4>Admin Suite</h4><p>Marketing + Sales Intelligence — dashboard, 3-tier content calendar, 8-stage CRM pipeline, NC territory map, 6 AI agents, 13-tab GTM workbook.</p><div class="feat-tag">TAB: ADMIN SUITE</div></div>
       <div class="feat"><div class="feat-icon">🎯</div><h4>Strategy Snapshot</h4><p>SWOT, competitive map, ROI math, 90-day plan. Full version in Big-NC-Tennis-Strategy.md.</p><div class="feat-tag">TAB: STRATEGY</div></div>
       <div class="feat"><div class="feat-icon">💰</div><h4>Investment & ROI</h4><p>What it costs, when it pays back, what the 2-year return looks like, what happens if we do nothing.</p><div class="feat-tag">TAB: PROPOSAL</div></div>
       <div class="feat"><div class="feat-icon">🚀</div><h4>Go-live Plan</h4><p>Week-by-week plan, decision gates, and the path from signature to member #1 on the new platform.</p><div class="feat-tag">TAB: PROPOSAL</div></div>
@@ -461,6 +463,17 @@
       <div class="feat"><div class="feat-icon">🎥</div><h4>Member Video Library</h4><p>Drills, match footage, coach lessons — tiered by Intermediate / Advanced / Unlimited access.</p><div class="feat-tag">PHASE 2 · WEEK 18-20</div></div>
       <div class="feat"><div class="feat-icon">💬</div><h4>Member Community</h4><p>Wix Forum / Groups — match results, clinic banter, hit-partner matching, equipment swap.</p><div class="feat-tag">PHASE 2 · WEEK 16-18</div></div>
       <div class="feat"><div class="feat-icon">📈</div><h4>Owner Dashboards</h4><p>MRR, active members, churn, conversion funnels, court utilization, coach productivity — one screen.</p><div class="feat-tag">PHASE 2 · WEEK 18-22</div></div>
+    </div>
+
+    <h3 style="margin:64px 0 16px;font-size:32px">Phase 2 · The Admin Suite <span style="font-family:'DM Sans';font-size:14px;color:var(--accent-dim);letter-spacing:.1em;text-transform:uppercase">Marketing + Sales Intelligence</span></h3>
+    <p class="muted" style="margin-bottom:24px">Patterns lifted from SmartSwing AI's marketing machine, Carol Medrado's sales CRM, and the Filveo GTM Bible v4 — fused into one admin surface. Full interactive preview in the <strong>Admin Suite</strong> tab.</p>
+    <div class="grid grid-3">
+      <div class="feat"><div class="feat-icon">📊</div><h4>Owner Dashboard</h4><p>Single-pane KPI view: MRR, active members, hot leads, pipeline value, funnel, court utilization, NPS. Updated nightly.</p><div class="feat-tag">ADMIN · DASHBOARD</div></div>
+      <div class="feat"><div class="feat-icon">🎨</div><h4>Marketing Command Center</h4><p>Three-tier content calendar (monthly → weekly → daily). Ad creative library. Campaign tracker. Email cadence firing status.</p><div class="feat-tag">ADMIN · MARKETING</div></div>
+      <div class="feat"><div class="feat-icon">🎯</div><h4>Sales CRM w/ Lead Scoring</h4><p>8-stage pipeline · 0-100 deterministic lead score · cadence enrollment · deal-probability-weighted forecast · proposal generator.</p><div class="feat-tag">ADMIN · CRM</div></div>
+      <div class="feat"><div class="feat-icon">🗺️</div><h4>NC Prospecting Engine</h4><p>Named-account territory map. HOAs · schools · corporate wellness · churches. Auto-enrichment. Segment-aware cadences.</p><div class="feat-tag">ADMIN · PROSPECTING</div></div>
+      <div class="feat"><div class="feat-icon">🤖</div><h4>Multi-Agent Orchestrator</h4><p>Claude agents for CMO · SDR · Content · Copywriter · Visual · UI/UX — shared pipeline state, human-in-the-loop approvals.</p><div class="feat-tag">ADMIN · AGENTS</div></div>
+      <div class="feat"><div class="feat-icon">📘</div><h4>GTM Bible Workbook</h4><p>13-tab interactive workbook: Strategy · Features · ROI · Personas · Corp Visions · SPIN · Market Intel · Segments · Prospects · Sequences · Financial · Van Westendorp · Execution.</p><div class="feat-tag">ADMIN · GTM</div></div>
     </div>
 
     <h3 style="margin:64px 0 16px;font-size:32px">Phase 3 · The Moat</h3>
@@ -790,6 +803,595 @@
   </div>
 </section>
 
+<!-- ============================= ADMIN SUITE ============================= -->
+<section data-pane="admin">
+  <style>
+    .subnav{display:flex;gap:6px;flex-wrap:wrap;padding:8px;background:#f7f7f7;border-radius:12px;margin-bottom:32px;border:1px solid var(--border)}
+    .subtab{font-family:'DM Sans',sans-serif;font-weight:600;font-size:13px;padding:10px 16px;border-radius:8px;cursor:pointer;color:#555;transition:all .15s;border:1px solid transparent;white-space:nowrap}
+    .subtab:hover{background:#fff;border-color:var(--border)}
+    .subtab.active{background:#000;color:var(--accent);border-color:#000}
+    .subpane{display:none}
+    .subpane.active{display:block}
+    .kpi-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px}
+    .kpi{background:#fff;border:1px solid var(--border);border-radius:12px;padding:16px}
+    .kpi .lbl{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);font-weight:700}
+    .kpi .val{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:.02em;line-height:1;margin-top:6px}
+    .kpi .delta{font-size:11px;font-weight:600;margin-top:6px}
+    .kpi .up{color:#1DB954}
+    .kpi .down{color:#FF3B30}
+    .kpi.dark{background:#0a0a0a;color:#fff;border-color:#1a1a1a}
+    .kpi.accent{background:var(--accent);border-color:var(--accent)}
+    .spark{display:flex;align-items:end;gap:3px;height:48px;margin-top:12px}
+    .spark i{display:block;flex:1;background:var(--accent);border-radius:2px;min-height:4px}
+    .spark.dark i{background:var(--accent)}
+    .funnel{display:flex;flex-direction:column;gap:6px}
+    .funnel-step{background:#fff;border:1px solid var(--border);border-radius:8px;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;position:relative}
+    .funnel-step .bar{position:absolute;inset:0;background:var(--accent);opacity:.15;border-radius:8px;pointer-events:none}
+    .funnel-step .lbl{font-weight:600;z-index:1;position:relative}
+    .funnel-step .num{font-family:'Bebas Neue',sans-serif;font-size:22px;z-index:1;position:relative}
+    .funnel-step .pct{font-size:11px;color:var(--muted);z-index:1;position:relative;margin-left:8px}
+    .tbl{width:100%;border-collapse:separate;border-spacing:0;background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;font-size:14px}
+    .tbl th{text-align:left;padding:12px 14px;background:#fafafa;font-weight:700;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);border-bottom:1px solid var(--border)}
+    .tbl td{padding:14px;border-bottom:1px solid var(--border)}
+    .tbl tr:last-child td{border-bottom:none}
+    .tbl tr:hover td{background:#fafafa}
+    .score{display:inline-flex;align-items:center;gap:6px;font-weight:700}
+    .score .bar2{width:60px;height:6px;background:#eee;border-radius:3px;overflow:hidden}
+    .score .fill{height:100%;background:var(--accent)}
+    .score.hot .fill{background:#FF3B30}
+    .score.warm .fill{background:#FF9500}
+    .score.cold .fill{background:#999}
+    .stage{display:inline-flex;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+    .s-new{background:#eef}
+    .s-trial{background:#fef3c7}
+    .s-signed{background:#C9E70A;color:#000}
+    .s-risk{background:#ffdcd0;color:#c00}
+    .s-active{background:#1DB954;color:#fff}
+    .kanban{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:16px}
+    .col{background:#fafafa;border:1px solid var(--border);border-radius:10px;padding:14px;min-height:120px}
+    .col h5{font-family:'Bebas Neue',sans-serif;letter-spacing:.06em;font-size:16px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+    .col h5 .cnt{font-size:11px;color:var(--muted);font-weight:400;letter-spacing:.1em}
+    .deal{background:#fff;border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:8px;font-size:13px;cursor:pointer}
+    .deal:hover{border-color:#000}
+    .deal .v{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:.03em;color:#000}
+    .deal .m{font-size:11px;color:var(--muted);margin-top:2px}
+    .calendar-admin{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;background:#eee;border-radius:12px;overflow:hidden;font-size:12px}
+    .cal-day-hdr{background:#000;color:#ccc;padding:10px;text-align:center;font-family:'Bebas Neue',sans-serif;letter-spacing:.08em;font-size:13px}
+    .cal-day{background:#fff;min-height:100px;padding:6px;display:flex;flex-direction:column;gap:3px}
+    .cal-day .d{font-size:11px;color:var(--muted);font-weight:600}
+    .cal-post{padding:4px 6px;border-radius:4px;font-size:10px;line-height:1.3;color:#000}
+    .cal-post.ig{background:#C9E70A}
+    .cal-post.email{background:#fce7f3}
+    .cal-post.blog{background:#dbeafe}
+    .cal-post.fb{background:#e9d5ff}
+    .cal-post.approved{border:1px solid #1DB954}
+    .agent-card{background:#0a0a0a;color:#fff;border:1px solid #1a1a1a;border-radius:12px;padding:20px;position:relative;overflow:hidden}
+    .agent-card::before{content:"";position:absolute;top:0;right:0;width:120px;height:120px;background:radial-gradient(circle,rgba(201,231,10,.15),transparent 60%);pointer-events:none}
+    .agent-status{display:inline-flex;align-items:center;gap:6px;font-size:11px;letter-spacing:.15em;text-transform:uppercase;font-weight:700}
+    .agent-status .dot{width:8px;height:8px;border-radius:50%;background:var(--accent);animation:pulse 1.6s ease-in-out infinite}
+    .agent-status.idle .dot{background:#666;animation:none}
+    .agent-status.waiting .dot{background:#FF9500}
+    .ad-tile{aspect-ratio:1;background:#0a0a0a;border-radius:10px;padding:16px;color:#fff;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden;border:1px solid #1a1a1a}
+    .ad-tile::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 30% 30%,rgba(201,231,10,.2),transparent 60%);pointer-events:none}
+    .ad-tile .label{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);font-weight:700;z-index:1;position:relative}
+    .ad-tile h5{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:.02em;line-height:1;z-index:1;position:relative}
+    .ad-tile .meta{font-size:10px;color:#888;z-index:1;position:relative}
+    .nc-map{background:linear-gradient(135deg,#0a0a0a,#1a1a0a);border-radius:12px;padding:24px;color:#fff;position:relative;min-height:280px;overflow:hidden}
+    .nc-pin{position:absolute;width:12px;height:12px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px rgba(201,231,10,.2);cursor:pointer}
+    .nc-pin::after{content:attr(data-label);position:absolute;left:16px;top:-4px;font-size:10px;letter-spacing:.1em;color:#fff;white-space:nowrap;background:rgba(0,0,0,.6);padding:2px 6px;border-radius:4px}
+    .nc-pin.warm{background:#FF9500;box-shadow:0 0 0 4px rgba(255,149,0,.2)}
+    .nc-pin.cold{background:#666;box-shadow:0 0 0 4px rgba(102,102,102,.2)}
+    .gtm-tab{background:#fff;border:1px solid var(--border);border-radius:10px;padding:16px;cursor:pointer;transition:all .15s}
+    .gtm-tab:hover{border-color:#000;transform:translateY(-2px)}
+    .gtm-tab .n{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--accent-dim);letter-spacing:.02em;line-height:1}
+    .gtm-tab .t{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:.04em;margin-top:4px}
+    .gtm-tab .d{font-size:12px;color:var(--muted);margin-top:4px}
+  </style>
+
+  <div class="container">
+    <div class="s-intro">
+      <span class="eyebrow">Tab 5 · Admin Suite — Marketing + Sales Intelligence</span>
+      <h2>One admin surface. Six tabs. The whole growth machine.</h2>
+      <p>Patterns fused from three sources — <strong>SmartSwing AI</strong>'s marketing operations, <strong>Carol's sales CRM</strong> (pipeline + cadences + scoring), and the <strong>Filveo GTM Bible v4</strong> (13-tab workbook + ROI + Van Westendorp) — rebuilt from scratch for Big NC Tennis. Every persona, cadence, segment, and named account below is tailored to tennis families, HOAs, and corporate buyers in North Carolina.</p>
+    </div>
+
+    <nav class="subnav">
+      <div class="subtab active" data-sub="dashboard">📊 Dashboard</div>
+      <div class="subtab" data-sub="marketing">🎨 Marketing</div>
+      <div class="subtab" data-sub="crm">🎯 Sales CRM</div>
+      <div class="subtab" data-sub="prospects">🗺️ Prospecting</div>
+      <div class="subtab" data-sub="agents">🤖 AI Agents</div>
+      <div class="subtab" data-sub="gtm">📘 GTM Workbook</div>
+    </nav>
+
+    <!-- DASHBOARD -->
+    <div class="subpane active" data-sub-pane="dashboard">
+      <div class="between" style="margin-bottom:16px">
+        <div><span class="eyebrow">Owner Dashboard</span><h3>Big NC Tennis · April 14, 2026</h3></div>
+        <div><span class="chip accent">LIVE</span> <span class="chip">Last refresh 3 min ago</span></div>
+      </div>
+
+      <div class="kpi-strip" style="margin-bottom:24px">
+        <div class="kpi accent"><div class="lbl">MRR</div><div class="val">$47,183</div><div class="delta up">▲ +$3,308 vs last mo</div></div>
+        <div class="kpi"><div class="lbl">Active members</div><div class="val">225</div><div class="delta up">▲ +14</div></div>
+        <div class="kpi"><div class="lbl">Hot leads</div><div class="val">14</div><div class="delta up">▲ +6</div></div>
+        <div class="kpi"><div class="lbl">Pipeline $</div><div class="val">$124K</div><div class="delta up">▲ +$31K</div></div>
+        <div class="kpi"><div class="lbl">Trial → Paid</div><div class="val">54%</div><div class="delta up">▲ +7 pts</div></div>
+        <div class="kpi"><div class="lbl">Churn / mo</div><div class="val">3.2%</div><div class="delta up">▼ -0.6 pts</div></div>
+        <div class="kpi dark"><div class="lbl" style="color:#888">NPS</div><div class="val" style="color:var(--accent)">62</div><div class="delta up">▲ +4</div></div>
+      </div>
+
+      <div class="grid grid-2" style="gap:24px">
+        <div class="card">
+          <div class="between"><h4>MRR Trajectory · last 6 months</h4><span class="chip">Base case on track</span></div>
+          <div class="spark"><i style="height:50%"></i><i style="height:58%"></i><i style="height:62%"></i><i style="height:70%"></i><i style="height:78%"></i><i style="height:82%"></i><i style="height:88%"></i><i style="height:92%"></i><i style="height:100%"></i><i style="height:95%"></i><i style="height:98%"></i><i style="height:100%"></i></div>
+          <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:11px;color:var(--muted)">
+            <span>Nov</span><span>Dec</span><span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span>
+          </div>
+          <p class="muted" style="margin-top:16px;font-size:13px">On track for <strong style="color:#000">$69K MRR by month 12</strong>. Projection based on current 4% net add + 3.2% churn.</p>
+        </div>
+
+        <div class="card">
+          <h4 style="margin-bottom:12px">Conversion Funnel · last 30 days</h4>
+          <div class="funnel">
+            <div class="funnel-step"><div class="bar" style="width:100%"></div><span class="lbl">Visitors</span><span><span class="num">4,820</span></span></div>
+            <div class="funnel-step"><div class="bar" style="width:72%"></div><span class="lbl">Academies page views</span><span><span class="num">3,471</span><span class="pct">72%</span></span></div>
+            <div class="funnel-step"><div class="bar" style="width:18%"></div><span class="lbl">Leads captured</span><span><span class="num">186</span><span class="pct">3.9%</span></span></div>
+            <div class="funnel-step"><div class="bar" style="width:11%"></div><span class="lbl">Trials booked</span><span><span class="num">42</span><span class="pct">23% of leads</span></span></div>
+            <div class="funnel-step"><div class="bar" style="width:6%"></div><span class="lbl">Paid signups</span><span><span class="num">23</span><span class="pct">54% of trials</span></span></div>
+          </div>
+        </div>
+      </div>
+
+      <h4 style="margin:32px 0 12px">Hot Leads · Top 8 by score</h4>
+      <table class="tbl">
+        <tr><th>Lead</th><th>Persona</th><th>Location</th><th>Score</th><th>Stage</th><th>Next action · owner</th></tr>
+        <tr><td><strong>Amanda Patel</strong><div class="muted" style="font-size:12px">Parent · 12yo UTR 3.8</div></td><td>Junior-parent Jen</td><td>Apex</td><td><span class="score hot"><span class="bar2"><span class="fill" style="width:94%"></span></span> 94</span></td><td><span class="stage s-trial">Trial booked</span></td><td>Pre-trial confirm call · today</td></tr>
+        <tr><td><strong>Preston HOA Board</strong><div class="muted" style="font-size:12px">6 courts · 340 homes</div></td><td>HOA director</td><td>Cary</td><td><span class="score hot"><span class="bar2"><span class="fill" style="width:91%"></span></span> 91</span></td><td><span class="stage s-new">Proposal sent</span></td><td>Follow-up Tuesday</td></tr>
+        <tr><td><strong>Michael Kim</strong><div class="muted" style="font-size:12px">Adult rec · NTRP 3.5</div></td><td>Adult rec Ryan</td><td>Fuquay-Varina</td><td><span class="score hot"><span class="bar2"><span class="fill" style="width:88%"></span></span> 88</span></td><td><span class="stage s-trial">Trial completed</span></td><td>Conversion push · cadence step 4</td></tr>
+        <tr><td><strong>Duke Health Wellness</strong><div class="muted" style="font-size:12px">Corporate league · 8 teams target</div></td><td>Corp wellness Chris</td><td>Durham</td><td><span class="score warm"><span class="bar2"><span class="fill" style="width:76%"></span></span> 76</span></td><td><span class="stage s-new">Discovery scheduled</span></td><td>Zoom Thursday 2pm</td></tr>
+        <tr><td><strong>Elena Gómez</strong><div class="muted" style="font-size:12px">Parent · 14yo advanced</div></td><td>Junior-parent Jen</td><td>Holly Springs</td><td><span class="score warm"><span class="bar2"><span class="fill" style="width:74%"></span></span> 74</span></td><td><span class="stage s-new">Inquiry</span></td><td>Send ADV academy brochure</td></tr>
+        <tr><td><strong>Apex Friendship HS</strong><div class="muted" style="font-size:12px">Tennis program · 32 players</div></td><td>School AD Alex</td><td>Apex</td><td><span class="score warm"><span class="bar2"><span class="fill" style="width:71%"></span></span> 71</span></td><td><span class="stage s-new">Intro meeting</span></td><td>Partnership deck</td></tr>
+        <tr><td><strong>SAS Institute Benefits</strong><div class="muted" style="font-size:12px">Wellness RFP open Q2</div></td><td>Corp wellness Chris</td><td>Cary</td><td><span class="score warm"><span class="bar2"><span class="fill" style="width:68%"></span></span> 68</span></td><td><span class="stage s-new">Inbound</span></td><td>Referral warm-intro</td></tr>
+        <tr><td><strong>Jayden Roberts family</strong><div class="muted" style="font-size:12px">Sibling enrolled · sibling inquiry</div></td><td>Junior-parent Jen</td><td>Charlotte</td><td><span class="score warm"><span class="bar2"><span class="fill" style="width:65%"></span></span> 65</span></td><td><span class="stage s-new">New lead</span></td><td>Sibling discount offer</td></tr>
+      </table>
+
+      <div class="grid grid-2" style="margin-top:32px">
+        <div class="card">
+          <h4 style="margin-bottom:12px">Court Utilization · this week</h4>
+          <div style="display:grid;gap:8px">
+            <div class="between"><span>Action Park</span><span><strong>87%</strong> · peak 6-8pm</span></div>
+            <div style="height:8px;background:#eee;border-radius:4px;overflow:hidden"><div style="width:87%;height:100%;background:var(--accent)"></div></div>
+            <div class="between" style="margin-top:8px"><span>Apex</span><span><strong>74%</strong></span></div>
+            <div style="height:8px;background:#eee;border-radius:4px;overflow:hidden"><div style="width:74%;height:100%;background:var(--accent)"></div></div>
+            <div class="between" style="margin-top:8px"><span>Holly Springs</span><span><strong>82%</strong></span></div>
+            <div style="height:8px;background:#eee;border-radius:4px;overflow:hidden"><div style="width:82%;height:100%;background:var(--accent)"></div></div>
+            <div class="between" style="margin-top:8px"><span>Harnett</span><span><strong>56%</strong> · opportunity</span></div>
+            <div style="height:8px;background:#eee;border-radius:4px;overflow:hidden"><div style="width:56%;height:100%;background:#FF9500"></div></div>
+            <div class="between" style="margin-top:8px"><span>Charlotte Sugaw Creek</span><span><strong>41%</strong> · launch ramp</span></div>
+            <div style="height:8px;background:#eee;border-radius:4px;overflow:hidden"><div style="width:41%;height:100%;background:#FF9500"></div></div>
+          </div>
+        </div>
+        <div class="card">
+          <h4 style="margin-bottom:12px">Coach Productivity · April</h4>
+          <table class="tbl" style="border:none;font-size:13px">
+            <tr><th>Coach</th><th>Sessions</th><th>Fill %</th><th>NPS</th></tr>
+            <tr><td>Kenzie M.</td><td>84</td><td>94%</td><td>71</td></tr>
+            <tr><td>James R.</td><td>78</td><td>89%</td><td>68</td></tr>
+            <tr><td>Tyrus B.</td><td>62</td><td>81%</td><td>64</td></tr>
+            <tr><td>Francine D.</td><td>51</td><td>76%</td><td>58</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- MARKETING -->
+    <div class="subpane" data-sub-pane="marketing">
+      <div class="between" style="margin-bottom:16px">
+        <div><span class="eyebrow">Marketing Command Center</span><h3>Content · Campaigns · Cadences · Creative</h3></div>
+        <div style="display:flex;gap:8px"><button class="btn btn-primary" style="padding:8px 16px;font-size:12px">+ Generate content</button><button class="btn btn-dark" style="padding:8px 16px;font-size:12px">Approval queue (4)</button></div>
+      </div>
+
+      <div class="card" style="margin-bottom:24px">
+        <span class="eyebrow">Three-tier content calendar · Filveo pattern</span>
+        <h4 style="margin:8px 0 4px">April Theme: <span style="color:var(--accent-dim)">"AI Player Development · What you can't see is what's holding you back"</span></h4>
+        <p class="muted">Week 1: Junior parents · Week 2: Adult rec players · Week 3: HOA + Corporate · Week 4: Champions + Tournament recap</p>
+
+        <div class="calendar-admin" style="margin-top:16px">
+          <div class="cal-day-hdr">MON</div><div class="cal-day-hdr">TUE</div><div class="cal-day-hdr">WED</div><div class="cal-day-hdr">THU</div><div class="cal-day-hdr">FRI</div><div class="cal-day-hdr">SAT</div><div class="cal-day-hdr">SUN</div>
+
+          <div class="cal-day"><div class="d">14</div><div class="cal-post ig approved">IG Reel: Kenzie breaks down Aiden's serve</div><div class="cal-post email">Email: Junior-parent Jen · Cad step 1</div></div>
+          <div class="cal-day"><div class="d">15</div><div class="cal-post blog approved">Blog: The Big NC Method · 4-week micro-cycles</div></div>
+          <div class="cal-day"><div class="d">16</div><div class="cal-post ig">IG Story: Tue clinic highlights</div><div class="cal-post fb">FB Post: Weekly tip</div></div>
+          <div class="cal-day"><div class="d">17</div><div class="cal-post email">Email: Adult rec Ryan · Cad step 2</div></div>
+          <div class="cal-day"><div class="d">18</div><div class="cal-post ig">IG Reel: 60s serve fix</div></div>
+          <div class="cal-day"><div class="d">19</div><div class="cal-post blog">Blog: UTR 3→5 player journey</div><div class="cal-post ig">IG carousel: Sat drills</div></div>
+          <div class="cal-day"><div class="d">20</div><div class="cal-post fb">FB Live: Q&A w/ James</div></div>
+
+          <div class="cal-day"><div class="d">21</div><div class="cal-post ig">IG: Member spotlight · Amanda</div><div class="cal-post email">Email: HOA · Cad step 1</div></div>
+          <div class="cal-day"><div class="d">22</div><div class="cal-post blog">Blog: HOA court revival case study</div></div>
+          <div class="cal-day"><div class="d">23</div><div class="cal-post ig">IG Story: Pickleball Wed vibes</div></div>
+          <div class="cal-day"><div class="d">24</div><div class="cal-post email">Email: Corporate · Cad step 2</div></div>
+          <div class="cal-day"><div class="d">25</div><div class="cal-post ig">IG Reel: AI plan unboxing</div></div>
+          <div class="cal-day"><div class="d">26</div><div class="cal-post blog">Blog: Weekend tournament recap</div></div>
+          <div class="cal-day"><div class="d">27</div><div class="cal-post ig">IG carousel: UTR Flex standings</div></div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:12px;font-size:11px;flex-wrap:wrap">
+          <span class="chip" style="background:#C9E70A">IG</span>
+          <span class="chip" style="background:#dbeafe">Blog</span>
+          <span class="chip" style="background:#fce7f3">Email</span>
+          <span class="chip" style="background:#e9d5ff">FB</span>
+          <span class="chip" style="border:1px solid #1DB954">Approved</span>
+        </div>
+      </div>
+
+      <div class="grid grid-2" style="gap:24px">
+        <div class="card">
+          <span class="eyebrow">Active email cadences</span>
+          <h4 style="margin:8px 0 12px">6 cadences running · 247 contacts enrolled</h4>
+          <table class="tbl" style="font-size:13px">
+            <tr><th>Cadence</th><th>Enrolled</th><th>Open</th><th>Reply</th><th>Converting</th></tr>
+            <tr><td><strong>Junior-parent Jen</strong> · 21d</td><td>87</td><td>52%</td><td>11%</td><td>8</td></tr>
+            <tr><td><strong>Adult rec Ryan</strong> · 21d</td><td>64</td><td>47%</td><td>8%</td><td>5</td></tr>
+            <tr><td><strong>Junior Andy</strong> · 30d</td><td>32</td><td>58%</td><td>14%</td><td>4</td></tr>
+            <tr><td><strong>HOA director</strong> · 60d</td><td>28</td><td>41%</td><td>18%</td><td>2</td></tr>
+            <tr><td><strong>Corp wellness Chris</strong> · 45d</td><td>24</td><td>38%</td><td>12%</td><td>1</td></tr>
+            <tr><td><strong>School AD Alex</strong> · 45d</td><td>12</td><td>55%</td><td>17%</td><td>0</td></tr>
+          </table>
+        </div>
+
+        <div class="card">
+          <span class="eyebrow">Campaigns · this quarter</span>
+          <h4 style="margin:8px 0 12px">4 active · 2 planned</h4>
+          <div style="display:grid;gap:10px">
+            <div style="padding:12px;border:1px solid var(--border);border-radius:8px"><div class="between"><strong>"Meet your AI Coach"</strong> · Q2 launch<span class="chip accent">Live</span></div><div class="muted" style="font-size:12px;margin-top:4px">Meta + Google · $2,400 budget · 41 trials booked · ROAS 3.2×</div></div>
+            <div style="padding:12px;border:1px solid var(--border);border-radius:8px"><div class="between"><strong>Charlotte Sugaw Creek opening</strong><span class="chip">Launch</span></div><div class="muted" style="font-size:12px;margin-top:4px">Geo-targeted Charlotte · $1,800 budget · grand-opening clinic Apr 26</div></div>
+            <div style="padding:12px;border:1px solid var(--border);border-radius:8px"><div class="between"><strong>Summer Camp · early bird</strong><span class="chip accent">Live</span></div><div class="muted" style="font-size:12px;margin-top:4px">Email + IG organic · 62 camp regs · -15% early-bird offer until Apr 30</div></div>
+            <div style="padding:12px;border:1px solid var(--border);border-radius:8px"><div class="between"><strong>HOA outreach wave 1</strong><span class="chip">Planned</span></div><div class="muted" style="font-size:12px;margin-top:4px">Preston · MacGregor · Amberly · Kildaire Farms · 4-touch cadence</div></div>
+          </div>
+        </div>
+      </div>
+
+      <h4 style="margin:32px 0 12px">Ad creative library · generated + approved</h4>
+      <div class="grid grid-4">
+        <div class="ad-tile"><div class="label">META · IG STORY</div><h5>UNLOCK YOUR KID'S TOP 3</h5><div class="meta">CTA: Book free AI assessment</div></div>
+        <div class="ad-tile"><div class="label">META · FEED</div><h5>5 NC LOCATIONS. ONE MEMBERSHIP.</h5><div class="meta">CTA: See tiers</div></div>
+        <div class="ad-tile"><div class="label">GOOGLE · RESPONSIVE</div><h5>TENNIS LESSONS FUQUAY-VARINA</h5><div class="meta">CTA: Book trial</div></div>
+        <div class="ad-tile"><div class="label">META · REEL</div><h5>THE 12-MIN PROBLEM AT JUNIOR CLINICS</h5><div class="meta">Voiceover + drill split-screen</div></div>
+        <div class="ad-tile"><div class="label">LINKEDIN · CORP</div><h5>TENNIS AS A WELLNESS PERK</h5><div class="meta">Duke Health + SAS case study</div></div>
+        <div class="ad-tile"><div class="label">META · CAROUSEL</div><h5>UTR 3 → 5 IN 14 MONTHS</h5><div class="meta">Aiden's player journey</div></div>
+        <div class="ad-tile"><div class="label">IG · STATIC</div><h5>CHARLOTTE · NOW OPEN</h5><div class="meta">Grand opening Apr 26</div></div>
+        <div class="ad-tile"><div class="label">META · VIDEO</div><h5>WHY 200+ FAMILIES CHOSE BIG NC</h5><div class="meta">Parent testimonial compilation</div></div>
+      </div>
+    </div>
+
+    <!-- CRM -->
+    <div class="subpane" data-sub-pane="crm">
+      <div class="between" style="margin-bottom:16px">
+        <div><span class="eyebrow">Sales CRM · Lead Scoring + 8-Stage Pipeline</span><h3>Every lead scored 0-100. Every deal forecast-weighted.</h3></div>
+        <div style="display:flex;gap:8px"><button class="btn btn-primary" style="padding:8px 16px;font-size:12px">+ New lead</button><button class="btn btn-dark" style="padding:8px 16px;font-size:12px">Generate proposal</button></div>
+      </div>
+
+      <div class="kpi-strip" style="margin-bottom:24px">
+        <div class="kpi"><div class="lbl">Open pipeline</div><div class="val">$124K</div><div class="delta up">weighted $58K</div></div>
+        <div class="kpi"><div class="lbl">Leads (30d)</div><div class="val">186</div><div class="delta up">↑ 18%</div></div>
+        <div class="kpi"><div class="lbl">Hot (A-tier)</div><div class="val">14</div><div class="delta">score ≥ 80</div></div>
+        <div class="kpi"><div class="lbl">Warm (B-tier)</div><div class="val">48</div><div class="delta">score 60-79</div></div>
+        <div class="kpi"><div class="lbl">Closed-won (mo)</div><div class="val">23</div><div class="delta up">$5,850 new MRR</div></div>
+        <div class="kpi accent"><div class="lbl">Win rate</div><div class="val">31%</div><div class="delta">lead → paid</div></div>
+      </div>
+
+      <h4 style="margin-bottom:12px">Lead score rubric · deterministic 0-100</h4>
+      <div class="grid grid-4" style="margin-bottom:24px">
+        <div class="card" style="padding:16px"><span class="eyebrow">Timeline</span><div style="font-family:'Bebas Neue';font-size:36px;color:var(--accent-dim);letter-spacing:.02em;margin:4px 0">+25</div><div class="muted" style="font-size:12px">This month · +25 · Next quarter · +15 · Exploring · +5</div></div>
+        <div class="card" style="padding:16px"><span class="eyebrow">Zip code fit</span><div style="font-family:'Bebas Neue';font-size:36px;color:var(--accent-dim);letter-spacing:.02em;margin:4px 0">+20</div><div class="muted" style="font-size:12px">15-mile radius to any location · +20 · 30-mile · +10</div></div>
+        <div class="card" style="padding:16px"><span class="eyebrow">Budget signal</span><div style="font-family:'Bebas Neue';font-size:36px;color:var(--accent-dim);letter-spacing:.02em;margin:4px 0">+20</div><div class="muted" style="font-size:12px">Saw pricing · returned · +20 · Inquired cost · +10</div></div>
+        <div class="card" style="padding:16px"><span class="eyebrow">Engagement</span><div style="font-family:'Bebas Neue';font-size:36px;color:var(--accent-dim);letter-spacing:.02em;margin:4px 0">+20</div><div class="muted" style="font-size:12px">Opened 3+ emails · +15 · Replied · +20 · Booked call · +20</div></div>
+      </div>
+
+      <h4 style="margin-bottom:12px">Pipeline · 8-stage kanban</h4>
+      <div class="kanban">
+        <div class="col">
+          <h5>New lead <span class="cnt">62</span></h5>
+          <div class="deal"><strong>Jayden Roberts fam</strong><div class="m">Sibling referral · Charlotte · 65</div></div>
+          <div class="deal"><strong>Chapel Hill parent</strong><div class="m">Blog-source · 14yo · 61</div></div>
+          <div class="deal"><strong>Apex HOA inquiry</strong><div class="m">Amberly · 52</div></div>
+        </div>
+        <div class="col">
+          <h5>Inquiry <span class="cnt">28</span></h5>
+          <div class="deal"><strong>Elena Gómez</strong><div class="v">INT academy</div><div class="m">Holly Springs · 74 · 14yo ADV</div></div>
+          <div class="deal"><strong>Apex Friendship HS</strong><div class="v">Partnership</div><div class="m">32 players · 71</div></div>
+          <div class="deal"><strong>SAS Wellness</strong><div class="v">Corp RFP</div><div class="m">Cary · 68</div></div>
+        </div>
+        <div class="col">
+          <h5>Trial booked <span class="cnt">18</span></h5>
+          <div class="deal"><strong>Amanda Patel</strong><div class="v">$199/mo</div><div class="m">INT-2 · Apex · 94 🔥</div></div>
+          <div class="deal"><strong>Duke Health</strong><div class="v">Discovery call</div><div class="m">Corporate league · 76</div></div>
+        </div>
+        <div class="col">
+          <h5>Trial done <span class="cnt">12</span></h5>
+          <div class="deal"><strong>Michael Kim</strong><div class="v">$199/mo</div><div class="m">INT-2 · Fuquay · 88 · follow-up</div></div>
+          <div class="deal"><strong>Lake Norman fam</strong><div class="v">Waitlist</div><div class="m">Charlotte area · 79</div></div>
+        </div>
+        <div class="col">
+          <h5>Proposal <span class="cnt">6</span></h5>
+          <div class="deal"><strong>Preston HOA</strong><div class="v">$4,800/mo</div><div class="m">6 courts · 340 homes · 91 🔥</div></div>
+          <div class="deal"><strong>Kildaire Farms</strong><div class="v">$2,400/mo</div><div class="m">Pilot proposal · 82</div></div>
+        </div>
+        <div class="col">
+          <h5>Signed <span class="cnt">23</span></h5>
+          <div class="deal"><strong>Ortiz family ×2</strong><div class="v">$358/mo</div><div class="m">2 siblings · ADV+INT</div></div>
+          <div class="deal"><strong>Meridian HOA</strong><div class="v">$1,200/mo</div><div class="m">Pilot · Apex · signed Tue</div></div>
+        </div>
+      </div>
+
+      <h4 style="margin:32px 0 12px">Proposal Generator · AI-drafted, coach-approved</h4>
+      <div class="card" style="background:#0a0a0a;color:#fff;border-color:#1a1a1a">
+        <div class="between">
+          <div>
+            <span class="chip accent">DRAFT · HOA PILOT</span>
+            <h4 style="margin-top:8px;color:#fff">Preston HOA · Court Activation Pilot</h4>
+            <p class="muted" style="color:#aaa;font-size:13px">Auto-drafted by Proposal Agent · 91 lead score · ready for owner review</p>
+          </div>
+          <div><button class="btn btn-primary" style="padding:8px 16px;font-size:12px">Approve + send</button></div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px">
+          <div style="padding:12px;background:#161616;border-radius:8px"><div class="muted" style="color:#888;font-size:11px;letter-spacing:.1em;text-transform:uppercase">Scope</div><div style="margin-top:4px">12-week pilot · Sat+Sun clinics · 2 coaches</div></div>
+          <div style="padding:12px;background:#161616;border-radius:8px"><div class="muted" style="color:#888;font-size:11px;letter-spacing:.1em;text-transform:uppercase">Revenue</div><div style="font-family:'Bebas Neue';font-size:24px;color:var(--accent);margin-top:4px">$4,800/mo</div></div>
+          <div style="padding:12px;background:#161616;border-radius:8px"><div class="muted" style="color:#888;font-size:11px;letter-spacing:.1em;text-transform:uppercase">Split</div><div style="margin-top:4px">70% Big NC · 30% HOA</div></div>
+          <div style="padding:12px;background:#161616;border-radius:8px"><div class="muted" style="color:#888;font-size:11px;letter-spacing:.1em;text-transform:uppercase">ROI to HOA</div><div style="margin-top:4px;color:var(--accent)">+$17K/yr + court revival</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROSPECTING -->
+    <div class="subpane" data-sub-pane="prospects">
+      <div class="between" style="margin-bottom:16px">
+        <div><span class="eyebrow">NC Prospecting Engine</span><h3>Territory map · named accounts · enriched segments</h3></div>
+        <div style="display:flex;gap:8px"><button class="btn btn-dark" style="padding:8px 16px;font-size:12px">Import list</button><button class="btn btn-primary" style="padding:8px 16px;font-size:12px">+ New segment</button></div>
+      </div>
+
+      <div class="grid" style="grid-template-columns:1.2fr 1fr;gap:24px;margin-bottom:24px">
+        <div class="nc-map">
+          <div class="eyebrow" style="color:var(--accent)">NC TERRITORY MAP · clusters by segment health</div>
+          <h3 style="color:#fff;margin-top:8px">Named accounts · 142 total</h3>
+          <p class="muted" style="color:#999;font-size:12px">🟢 Hot · 🟠 Warm · ⚫ Cold · Pin count proportional to cluster density</p>
+          <div style="position:relative;height:200px;margin-top:20px">
+            <div class="nc-pin" style="top:60%;left:18%" data-label="Charlotte · 22 HOA · 4 Corp"></div>
+            <div class="nc-pin warm" style="top:55%;left:26%" data-label="Lake Norman · 6 CC"></div>
+            <div class="nc-pin cold" style="top:70%;left:34%" data-label="Gastonia · 3 schools"></div>
+            <div class="nc-pin" style="top:40%;left:52%" data-label="Greensboro · 8 HOA"></div>
+            <div class="nc-pin" style="top:44%;left:68%" data-label="Cary/Apex · 31 HOA · 3 Corp"></div>
+            <div class="nc-pin warm" style="top:48%;left:72%" data-label="Raleigh · 18 HOA · 6 Corp"></div>
+            <div class="nc-pin" style="top:52%;left:76%" data-label="Chapel Hill · 9"></div>
+            <div class="nc-pin warm" style="top:56%;left:74%" data-label="Durham · 12 · Duke"></div>
+            <div class="nc-pin cold" style="top:62%;left:70%" data-label="Fuquay · existing"></div>
+            <div class="nc-pin cold" style="top:72%;left:66%" data-label="Harnett · existing"></div>
+            <div class="nc-pin warm" style="top:36%;left:88%" data-label="Rocky Mount · 5"></div>
+          </div>
+        </div>
+        <div class="card">
+          <span class="eyebrow">Segments</span>
+          <h4 style="margin:8px 0 12px">6 target segments · 142 accounts</h4>
+          <div style="display:grid;gap:8px">
+            <div class="between" style="padding:10px;border:1px solid var(--border);border-radius:8px"><div><strong>HOA neighborhoods</strong><div class="muted" style="font-size:12px">Triangle + Charlotte · underused courts</div></div><span class="chip accent">54</span></div>
+            <div class="between" style="padding:10px;border:1px solid var(--border);border-radius:8px"><div><strong>Schools · HS tennis programs</strong><div class="muted" style="font-size:12px">Wake · Chatham · Mecklenburg</div></div><span class="chip">28</span></div>
+            <div class="between" style="padding:10px;border:1px solid var(--border);border-radius:8px"><div><strong>Corporate wellness</strong><div class="muted" style="font-size:12px">Duke · SAS · Lenovo · Fidelity · RedHat · Epic · BoA · Truist</div></div><span class="chip">18</span></div>
+            <div class="between" style="padding:10px;border:1px solid var(--border);border-radius:8px"><div><strong>Country clubs · partnerships</strong><div class="muted" style="font-size:12px">Shared coaching/stringing contracts</div></div><span class="chip">12</span></div>
+            <div class="between" style="padding:10px;border:1px solid var(--border);border-radius:8px"><div><strong>Churches + community centers</strong><div class="muted" style="font-size:12px">Underused courts · Sunday programming</div></div><span class="chip">18</span></div>
+            <div class="between" style="padding:10px;border:1px solid var(--border);border-radius:8px"><div><strong>Summer camp + afterschool</strong><div class="muted" style="font-size:12px">YMCA · private · partnership plays</div></div><span class="chip">12</span></div>
+          </div>
+        </div>
+      </div>
+
+      <h4 style="margin-bottom:12px">Named accounts · S-tier (go first)</h4>
+      <table class="tbl">
+        <tr><th>Account</th><th>Segment</th><th>Region</th><th>Why S-tier</th><th>Enrichment</th><th>Stage</th></tr>
+        <tr><td><strong>Preston HOA</strong></td><td>HOA</td><td>Cary</td><td>6 courts · 340 homes · board contact</td><td>✅ Board · email · budget</td><td><span class="stage s-new">Proposal</span></td></tr>
+        <tr><td><strong>Duke Health · Employee Wellness</strong></td><td>Corporate</td><td>Durham</td><td>$50K wellness budget · existing vendor seeking tennis</td><td>✅ Director · LinkedIn · procurement</td><td><span class="stage s-new">Discovery</span></td></tr>
+        <tr><td><strong>SAS Institute</strong></td><td>Corporate</td><td>Cary</td><td>Health-first culture · existing onsite gym · court space</td><td>✅ Benefits lead · RFP open</td><td><span class="stage s-new">Inbound</span></td></tr>
+        <tr><td><strong>MacGregor Downs HOA</strong></td><td>HOA</td><td>Cary</td><td>4 courts · aging population · coaching gap</td><td>✅ Board agenda · May meeting</td><td><span class="stage s-new">Intro booked</span></td></tr>
+        <tr><td><strong>Apex Friendship HS</strong></td><td>School</td><td>Apex</td><td>32-player tennis program · coach vacancy</td><td>✅ AD · athletic budget</td><td><span class="stage s-new">Partnership deck</span></td></tr>
+        <tr><td><strong>Lenovo · Morrisville</strong></td><td>Corporate</td><td>Morrisville</td><td>Global HQ · wellness program refresh Q3</td><td>🟡 HR contact · warm intro needed</td><td><span class="stage s-new">Research</span></td></tr>
+        <tr><td><strong>Governors Club</strong></td><td>Country club</td><td>Chapel Hill</td><td>Stringing partnership opportunity</td><td>✅ Pro shop manager</td><td><span class="stage s-new">Proposal draft</span></td></tr>
+        <tr><td><strong>Ballantyne CC</strong></td><td>Country club</td><td>Charlotte</td><td>Charlotte Sugaw Creek cross-promo</td><td>🟡 Cold · GM contact needed</td><td><span class="stage s-new">Prospect</span></td></tr>
+      </table>
+    </div>
+
+    <!-- AI AGENTS -->
+    <div class="subpane" data-sub-pane="agents">
+      <div class="between" style="margin-bottom:16px">
+        <div><span class="eyebrow">Multi-Agent Orchestrator · Claude</span><h3>6 agents · shared pipeline state · human-in-the-loop</h3></div>
+        <div><span class="chip accent">● ALL ACTIVE</span></div>
+      </div>
+
+      <div class="grid grid-3" style="gap:16px;margin-bottom:24px">
+        <div class="agent-card">
+          <div class="between"><span class="agent-status"><span class="dot"></span>ACTIVE</span><span class="chip dark">CMO</span></div>
+          <h4 style="margin:12px 0;color:#fff;font-family:'Bebas Neue';letter-spacing:.04em">CMO Agent</h4>
+          <p class="muted" style="color:#bbb;font-size:13px">Orchestrates monthly theme · weekly sub-theme · assigns work to content + copywriter + visual agents.</p>
+          <div style="margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px">
+            <div><div class="muted" style="color:#888">Last action</div><div>Shipped April theme</div></div>
+            <div><div class="muted" style="color:#888">Queue</div><div>3 approvals</div></div>
+          </div>
+        </div>
+
+        <div class="agent-card">
+          <div class="between"><span class="agent-status"><span class="dot"></span>ACTIVE</span><span class="chip dark">SDR</span></div>
+          <h4 style="margin:12px 0;color:#fff;font-family:'Bebas Neue';letter-spacing:.04em">SDR Agent</h4>
+          <p class="muted" style="color:#bbb;font-size:13px">Scores inbound leads · enrolls in persona-specific cadence · drafts follow-ups · escalates A-tier to owner.</p>
+          <div style="margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px">
+            <div><div class="muted" style="color:#888">Last action</div><div>Scored 12 leads</div></div>
+            <div><div class="muted" style="color:#888">Queue</div><div>4 drafts</div></div>
+          </div>
+        </div>
+
+        <div class="agent-card">
+          <div class="between"><span class="agent-status waiting"><span class="dot"></span>AWAITING APPROVAL</span><span class="chip dark">CONTENT</span></div>
+          <h4 style="margin:12px 0;color:#fff;font-family:'Bebas Neue';letter-spacing:.04em">Content Creator</h4>
+          <p class="muted" style="color:#bbb;font-size:13px">Drafts blog posts · IG captions · FB posts based on the 3-tier calendar. Waits for Lindsay approval before publishing.</p>
+          <div style="margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px">
+            <div><div class="muted" style="color:#888">Last action</div><div>Drafted 5 IG reels</div></div>
+            <div><div class="muted" style="color:#888">Queue</div><div>5 pending</div></div>
+          </div>
+        </div>
+
+        <div class="agent-card">
+          <div class="between"><span class="agent-status"><span class="dot"></span>ACTIVE</span><span class="chip dark">COPY</span></div>
+          <h4 style="margin:12px 0;color:#fff;font-family:'Bebas Neue';letter-spacing:.04em">Copywriter</h4>
+          <p class="muted" style="color:#bbb;font-size:13px">Writes email cadence bodies · ad headlines · landing page copy. A/B subject variants per Corporate Visions arc.</p>
+          <div style="margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px">
+            <div><div class="muted" style="color:#888">Last action</div><div>Drafted 6 subj lines</div></div>
+            <div><div class="muted" style="color:#888">Queue</div><div>2 pending</div></div>
+          </div>
+        </div>
+
+        <div class="agent-card">
+          <div class="between"><span class="agent-status idle"><span class="dot"></span>IDLE</span><span class="chip dark">VISUAL</span></div>
+          <h4 style="margin:12px 0;color:#fff;font-family:'Bebas Neue';letter-spacing:.04em">Visual Agent</h4>
+          <p class="muted" style="color:#bbb;font-size:13px">Generates ad creative in brand (lime + black + Bebas Neue). Produces IG reel storyboards + thumbnail variants.</p>
+          <div style="margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px">
+            <div><div class="muted" style="color:#888">Last action</div><div>Generated 8 tiles</div></div>
+            <div><div class="muted" style="color:#888">Queue</div><div>0 · awaiting brief</div></div>
+          </div>
+        </div>
+
+        <div class="agent-card">
+          <div class="between"><span class="agent-status"><span class="dot"></span>ACTIVE</span><span class="chip dark">UI/UX</span></div>
+          <h4 style="margin:12px 0;color:#fff;font-family:'Bebas Neue';letter-spacing:.04em">UI/UX Agent</h4>
+          <p class="muted" style="color:#bbb;font-size:13px">Monitors member portal for friction (drop-offs, rage clicks). Proposes weekly UX patches for coach + member flows.</p>
+          <div style="margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px">
+            <div><div class="muted" style="color:#888">Last action</div><div>Flagged booking CTA</div></div>
+            <div><div class="muted" style="color:#888">Queue</div><div>2 recs</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="eyebrow">Shared PipelineState · single source of truth</span>
+        <h4 style="margin:8px 0 12px">How the 6 agents coordinate</h4>
+        <div style="background:#0a0a0a;color:#fff;padding:20px;border-radius:10px;font-family:monospace;font-size:12px;line-height:1.8">
+          <div>PipelineState = {</div>
+          <div style="padding-left:20px"><span style="color:#C9E70A">leads:</span> [186 total · scored · segmented],</div>
+          <div style="padding-left:20px"><span style="color:#C9E70A">cadences:</span> [6 active · 247 enrolled],</div>
+          <div style="padding-left:20px"><span style="color:#C9E70A">content:</span> [April theme · week 1 shipped · week 2 drafted],</div>
+          <div style="padding-left:20px"><span style="color:#C9E70A">campaigns:</span> [4 live · 2 planned],</div>
+          <div style="padding-left:20px"><span style="color:#C9E70A">deals:</span> [151 open · $124K pipeline · weighted $58K],</div>
+          <div style="padding-left:20px"><span style="color:#C9E70A">members:</span> [225 active · 62 NPS · 3.2% churn],</div>
+          <div style="padding-left:20px"><span style="color:#C9E70A">ai_plans:</span> [68 in production · week 12 drafted · 22 pending coach review]</div>
+          <div>}</div>
+        </div>
+        <p class="muted" style="margin-top:12px;font-size:13px">Every agent reads + writes to this state. Owner + Lindsay see every action in the approval queue. Nothing publishes without human sign-off on high-stakes items (ads, proposals, AI coaching plans).</p>
+      </div>
+
+      <h4 style="margin:32px 0 12px">Approval queue · 14 items awaiting human</h4>
+      <div style="display:grid;gap:8px">
+        <div style="display:grid;grid-template-columns:auto 1fr auto auto;gap:12px;padding:12px;background:#fff;border:1px solid var(--border);border-radius:8px;align-items:center">
+          <span class="chip accent">CONTENT</span><div><strong>IG Reel · "60s serve fix"</strong><div class="muted" style="font-size:12px">Drafted by Content Agent · ready to publish Apr 18</div></div><button class="btn btn-dark" style="padding:6px 12px;font-size:11px">Preview</button><button class="btn btn-primary" style="padding:6px 12px;font-size:11px">Approve</button>
+        </div>
+        <div style="display:grid;grid-template-columns:auto 1fr auto auto;gap:12px;padding:12px;background:#fff;border:1px solid var(--border);border-radius:8px;align-items:center">
+          <span class="chip">AI PLAN</span><div><strong>Week 12 · Michael K. · INT-2</strong><div class="muted" style="font-size:12px">Claude drafted · Kenzie to approve by Sat AM</div></div><button class="btn btn-dark" style="padding:6px 12px;font-size:11px">Preview</button><button class="btn btn-primary" style="padding:6px 12px;font-size:11px">Approve</button>
+        </div>
+        <div style="display:grid;grid-template-columns:auto 1fr auto auto;gap:12px;padding:12px;background:#fff;border:1px solid var(--border);border-radius:8px;align-items:center">
+          <span class="chip">PROPOSAL</span><div><strong>Preston HOA pilot · $4,800/mo</strong><div class="muted" style="font-size:12px">Proposal Agent drafted · owner to send</div></div><button class="btn btn-dark" style="padding:6px 12px;font-size:11px">Preview</button><button class="btn btn-primary" style="padding:6px 12px;font-size:11px">Approve</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- GTM WORKBOOK -->
+    <div class="subpane" data-sub-pane="gtm">
+      <div class="between" style="margin-bottom:16px">
+        <div><span class="eyebrow">GTM Bible Workbook · Filveo v4 pattern</span><h3>13 interactive tabs · every persona resolves to a price, every account to an approach.</h3></div>
+      </div>
+
+      <div class="grid grid-3" style="margin-bottom:24px">
+        <div class="gtm-tab"><div class="n">01</div><div class="t">Strategy</div><div class="d">Thesis · Why Change · Why Now · Why Big NC</div></div>
+        <div class="gtm-tab"><div class="n">02</div><div class="t">Features & Differentiation</div><div class="d">AI coaching · multi-location · pickleball · tech+values</div></div>
+        <div class="gtm-tab"><div class="n">03</div><div class="t">BVS / ROI Study</div><div class="d">Member ROI calculator · coaching hours · UTR uplift</div></div>
+        <div class="gtm-tab"><div class="n">04</div><div class="t">Personas + Journey</div><div class="d">5 personas × dated day-N journey</div></div>
+        <div class="gtm-tab"><div class="n">05</div><div class="t">Corp Visions</div><div class="d">Unconsidered need → contrast → resolution</div></div>
+        <div class="gtm-tab"><div class="n">06</div><div class="t">SPIN + Objections</div><div class="d">12 objections · SPIN scripts per persona</div></div>
+        <div class="gtm-tab"><div class="n">07</div><div class="t">Market Intel</div><div class="d">NC competitor map · global academy playbook</div></div>
+        <div class="gtm-tab"><div class="n">08</div><div class="t">Segments + Leads</div><div class="d">S/A/B tiers × vertical segments</div></div>
+        <div class="gtm-tab"><div class="n">09</div><div class="t">NC Prospects</div><div class="d">HOAs · schools · corporate · churches · named list</div></div>
+        <div class="gtm-tab"><div class="n">10</div><div class="t">Sequence Builder</div><div class="d">6-email cadences · A/B subjects · Corp Visions arc</div></div>
+        <div class="gtm-tab"><div class="n">11</div><div class="t">Financial Model</div><div class="d">MRR projection · CAC/LTV · breakeven · location ramp</div></div>
+        <div class="gtm-tab"><div class="n">12</div><div class="t">Van Westendorp</div><div class="d">4-question price sensitivity · validate $119–$399 bands</div></div>
+        <div class="gtm-tab"><div class="n">13</div><div class="t">Execution</div><div class="d">Phase gates · Network → Pilots → Scale</div></div>
+      </div>
+
+      <div class="grid grid-2" style="gap:24px">
+        <div class="card dark" style="color:#fff">
+          <span class="eyebrow" style="color:var(--accent-dim)">Tab 3 preview · ROI calculator</span>
+          <h4 style="margin:12px 0;color:#fff">Member value calculator · INT-2 ($199/mo)</h4>
+          <table style="width:100%;margin-top:8px;font-size:13px">
+            <tr><td style="padding:8px 0;color:#aaa">8 sessions × $40 equivalent value</td><td style="text-align:right;color:#fff">$320</td></tr>
+            <tr><td style="padding:8px 0;color:#aaa">AI coaching plan</td><td style="text-align:right;color:#fff">$49 value</td></tr>
+            <tr><td style="padding:8px 0;color:#aaa">Member community access</td><td style="text-align:right;color:#fff">$15 value</td></tr>
+            <tr><td style="padding:8px 0;color:#aaa">Stringing discount (2 strings/mo)</td><td style="text-align:right;color:#fff">$8 value</td></tr>
+            <tr><td style="padding:8px 0;color:#aaa">1 guest pass/mo</td><td style="text-align:right;color:#fff">$35 value</td></tr>
+            <tr style="border-top:1px solid #222"><td style="padding:12px 0;color:var(--accent)"><strong>Total member value</strong></td><td style="text-align:right;font-family:'Bebas Neue';font-size:24px;color:var(--accent)">$427</td></tr>
+            <tr><td style="padding:8px 0;color:#aaa">Member cost</td><td style="text-align:right;color:#fff">$199</td></tr>
+            <tr><td style="padding:8px 0;color:var(--accent)"><strong>Perceived savings</strong></td><td style="text-align:right;font-family:'Bebas Neue';font-size:24px;color:var(--accent)">$228/mo</td></tr>
+          </table>
+        </div>
+
+        <div class="card">
+          <span class="eyebrow">Tab 12 preview · Van Westendorp</span>
+          <h4 style="margin:12px 0">Price sensitivity curves · INT Unlimited ($299)</h4>
+          <svg viewBox="0 0 400 200" style="width:100%;height:200px;margin-top:8px">
+            <line x1="40" y1="180" x2="380" y2="180" stroke="#ddd"/>
+            <line x1="40" y1="20" x2="40" y2="180" stroke="#ddd"/>
+            <!-- Too Cheap curve -->
+            <polyline points="40,160 100,130 160,90 220,50 280,30 340,25 380,20" fill="none" stroke="#999" stroke-width="2"/>
+            <!-- Cheap -->
+            <polyline points="40,20 100,30 160,50 220,90 280,130 340,160 380,170" fill="none" stroke="#1DB954" stroke-width="2"/>
+            <!-- Expensive -->
+            <polyline points="40,170 100,160 160,130 220,90 280,50 340,30 380,20" fill="none" stroke="#FF9500" stroke-width="2"/>
+            <!-- Too Expensive -->
+            <polyline points="40,180 100,170 160,150 220,110 280,60 340,30 380,20" fill="none" stroke="#FF3B30" stroke-width="2"/>
+            <!-- OPP dot -->
+            <circle cx="220" cy="90" r="6" fill="var(--accent)"/>
+            <text x="232" y="95" font-size="10" fill="#000" font-weight="700">OPP $289</text>
+            <text x="40" y="195" font-size="9" fill="#888">$99</text>
+            <text x="380" y="195" font-size="9" fill="#888" text-anchor="end">$499</text>
+          </svg>
+          <div style="display:flex;gap:12px;font-size:11px;flex-wrap:wrap;margin-top:8px">
+            <span>🟢 Cheap</span><span>🟠 Expensive</span><span>🔴 Too Expensive</span><span>⚫ Too Cheap</span>
+          </div>
+          <p class="muted" style="margin-top:12px;font-size:13px">Optimal Price Point ≈ <strong style="color:#000">$289/mo</strong>. Current proposed $299 is within 3% of OPP · sensible. Run real survey month 2.</p>
+        </div>
+
+        <div class="card">
+          <span class="eyebrow">Tab 10 preview · Sequence Builder</span>
+          <h4 style="margin:12px 0">Junior-parent Jen · 21-day arc</h4>
+          <div style="display:grid;gap:8px">
+            <div style="padding:10px;background:#fafafa;border-radius:8px;border-left:3px solid var(--accent);font-size:13px"><strong>Day 0 · Unconsidered need</strong><div class="muted">"Does your player know their top 3 weaknesses?"</div></div>
+            <div style="padding:10px;background:#fafafa;border-radius:8px;border-left:3px solid var(--accent);font-size:13px"><strong>Day 3 · Contrast</strong><div class="muted">"Drop-in vs. program: a visual comparison"</div></div>
+            <div style="padding:10px;background:#fafafa;border-radius:8px;border-left:3px solid var(--accent);font-size:13px"><strong>Day 7 · Resolution</strong><div class="muted">"See an AI baseline assessment in action (2-min video)"</div></div>
+            <div style="padding:10px;background:#fafafa;border-radius:8px;border-left:3px solid #999;font-size:13px"><strong>Day 12 · Social proof</strong><div class="muted">"Parent story: UTR 3.1 → 5.4 in 14 months"</div></div>
+            <div style="padding:10px;background:#fafafa;border-radius:8px;border-left:3px solid #999;font-size:13px"><strong>Day 17 · Urgency</strong><div class="muted">"Last chance: free assessment this month"</div></div>
+            <div style="padding:10px;background:#fafafa;border-radius:8px;border-left:3px solid #ccc;font-size:13px"><strong>Day 21 · Soft close</strong><div class="muted">"I'll stop emailing after this..."</div></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <span class="eyebrow">Tab 11 preview · Financial Model</span>
+          <h4 style="margin:12px 0">12-month MRR projection · base case</h4>
+          <div class="spark" style="height:80px;margin-top:8px">
+            <i style="height:42%"></i><i style="height:46%"></i><i style="height:50%"></i><i style="height:53%"></i><i style="height:58%"></i><i style="height:64%"></i><i style="height:70%"></i><i style="height:76%"></i><i style="height:82%"></i><i style="height:88%"></i><i style="height:94%"></i><i style="height:100%"></i>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px">
+            <div><div class="muted" style="font-size:11px;letter-spacing:.15em;text-transform:uppercase">Month 1</div><div style="font-family:'Bebas Neue';font-size:28px">$29K</div></div>
+            <div><div class="muted" style="font-size:11px;letter-spacing:.15em;text-transform:uppercase">Month 6</div><div style="font-family:'Bebas Neue';font-size:28px">$47K</div></div>
+            <div><div class="muted" style="font-size:11px;letter-spacing:.15em;text-transform:uppercase">Month 12</div><div style="font-family:'Bebas Neue';font-size:28px;color:var(--accent-dim)">$69K</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ============================= STRATEGY ============================= -->
 <section data-pane="strategy">
   <div class="container">
@@ -976,6 +1578,13 @@
     window.scrollTo({top:0,behavior:'smooth'});
   }
   document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>showTab(t.dataset.tab)));
+
+  // Admin suite sub-tabs
+  function showSub(sub){
+    document.querySelectorAll('.subtab').forEach(t=>t.classList.toggle('active',t.dataset.sub===sub));
+    document.querySelectorAll('.subpane').forEach(s=>s.classList.toggle('active',s.dataset.subPane===sub));
+  }
+  document.querySelectorAll('.subtab').forEach(t=>t.addEventListener('click',()=>showSub(t.dataset.sub)));
 </script>
 
 </body>
