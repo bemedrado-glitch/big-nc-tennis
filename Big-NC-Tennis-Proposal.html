@@ -130,24 +130,44 @@
   .mockup-url{margin-left:12px;font-size:12px;color:#888;font-family:monospace}
   .mockup-body{background:#fff}
 
-  .l-hero{background:#0a0a0a;color:#fff;padding:80px 48px;position:relative;overflow:hidden}
-  .l-hero::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 70% 30%,rgba(201,231,10,.2),transparent 50%);pointer-events:none}
-  .l-nav{display:flex;align-items:center;padding:20px 48px;background:#0a0a0a;color:#fff;border-bottom:1px solid #1a1a1a;font-size:13px;gap:24px}
+  .l-hero{background:#050505;color:#fff;padding:112px 48px 96px;position:relative;overflow:hidden;min-height:480px}
+  .l-hero::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 75% 20%,rgba(201,231,10,.18),transparent 55%),radial-gradient(circle at 20% 90%,rgba(201,231,10,.08),transparent 50%);pointer-events:none}
+  .l-hero-court{position:absolute;right:-40px;top:40px;bottom:40px;width:45%;opacity:.35;pointer-events:none}
+  .l-hero-court svg{width:100%;height:100%}
+  .l-hero-kicker{font-size:11px;letter-spacing:.35em;color:var(--accent);font-weight:700;text-transform:uppercase;display:inline-flex;align-items:center;gap:10px;margin-bottom:20px}
+  .l-hero-kicker::before{content:"";display:block;width:32px;height:2px;background:var(--accent)}
+  .l-nav{display:flex;align-items:center;padding:20px 48px;background:#050505;color:#fff;border-bottom:1px solid #111;font-size:12px;gap:28px;letter-spacing:.04em;text-transform:uppercase;font-weight:500}
   .l-nav .spacer{flex:1}
-  .l-nav a{color:#ccc}
-  .l-hero h1{font-size:80px;letter-spacing:.03em;margin-bottom:16px}
+  .l-nav a{color:#aaa;cursor:pointer}
+  .l-nav a:hover{color:var(--accent)}
+  .l-hero h1{font-size:clamp(64px,10vw,120px);letter-spacing:.03em;margin-bottom:20px;line-height:.92;position:relative}
+  .l-hero h1 em{font-style:italic;color:var(--accent);font-family:'Bebas Neue',sans-serif}
   .l-hero .accent{color:var(--accent)}
-  .l-hero p{font-size:18px;color:#ccc;max-width:520px}
-  .l-trust{display:flex;gap:32px;padding:20px 48px;border-top:1px solid #1a1a1a;background:#0a0a0a;color:#888;font-size:12px;letter-spacing:.1em;text-transform:uppercase;flex-wrap:wrap}
+  .l-hero p{font-size:17px;color:#bbb;max-width:520px;line-height:1.55;letter-spacing:.01em}
+  .l-hero-ctas{margin-top:36px;display:flex;gap:12px;flex-wrap:wrap}
+  .l-hero-ctas .btn{padding:16px 28px;font-size:13px;letter-spacing:.15em;text-transform:uppercase}
+  .l-trust{display:flex;gap:40px;padding:24px 48px;border-top:1px solid #111;background:#050505;color:#888;font-size:11px;letter-spacing:.2em;text-transform:uppercase;flex-wrap:wrap;align-items:center}
+  .l-trust span{display:inline-flex;align-items:center;gap:8px;font-weight:600}
+  .l-trust svg{width:14px;height:14px;stroke:var(--accent);flex-shrink:0}
 
-  .l-programs{padding:64px 48px;background:#fff}
-  .l-programs h2{font-size:48px;margin-bottom:32px;text-align:center}
-  .l-program-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px}
-  .l-program{padding:24px;border:1px solid var(--border);border-radius:12px;text-align:center;transition:all .15s;cursor:pointer}
-  .l-program:hover{border-color:#000;transform:translateY(-2px)}
-  .l-program .ic{font-size:32px;margin-bottom:8px}
-  .l-program h4{font-size:20px;margin-bottom:4px}
-  .l-program p{font-size:13px;color:var(--muted)}
+  .l-programs{padding:80px 48px;background:#fff}
+  .l-programs-head{text-align:center;max-width:720px;margin:0 auto 48px}
+  .l-programs .eyebrow{font-size:12px;letter-spacing:.3em;font-weight:700;color:var(--accent-dim);text-transform:uppercase}
+  .l-programs h2{font-size:clamp(40px,5vw,64px);margin:12px 0 12px;text-align:center;letter-spacing:.02em;line-height:.95}
+  .l-programs h2 em{font-style:italic;color:var(--accent-dim);font-family:'Bebas Neue',sans-serif}
+  .l-programs .subtitle{font-size:15px;color:var(--muted);letter-spacing:.02em}
+  .l-program-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+  .l-program{padding:28px 22px;background:#fff;text-align:center;transition:background .2s,color .2s;cursor:pointer;position:relative}
+  .l-program::after{content:"";position:absolute;left:24px;right:24px;bottom:0;height:3px;background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform .25s cubic-bezier(.2,.8,.2,1)}
+  .l-program:hover{background:#000;color:#fff}
+  .l-program:hover .ic svg{stroke:var(--accent)}
+  .l-program:hover p{color:#888}
+  .l-program:hover::after{transform:scaleX(1)}
+  .l-program .ic{display:flex;align-items:center;justify-content:center;margin:0 auto 14px;width:52px;height:52px;border-radius:14px;background:rgba(201,231,10,.12)}
+  .l-program:hover .ic{background:rgba(201,231,10,.16)}
+  .l-program .ic svg{width:28px;height:28px;stroke:#000;transition:stroke .2s}
+  .l-program h4{font-size:22px;margin-bottom:6px;letter-spacing:.05em}
+  .l-program p{font-size:12px;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;font-weight:500}
 
   /* DEMO: portal */
   .portal{background:#0a0a0a;color:#fff;border-radius:var(--radius);padding:32px;border:1px solid #1a1a1a}
@@ -353,48 +373,139 @@
           <span class="btn btn-primary" style="padding:8px 16px">Member Login</span>
         </div>
         <div class="l-hero">
-          <h1>WHERE NORTH CAROLINA<br><span class="accent">PLAYS TENNIS.</span></h1>
-          <p>5 locations. Every level. Every week. Every milestone.<br>AI-powered player development · values-driven coaching · built for families.</p>
-          <div style="margin-top:32px;display:flex;gap:12px">
-            <span class="btn btn-primary">Book a Free Trial</span>
-            <span class="btn btn-ghost">See Membership Tiers</span>
+          <div class="l-hero-court" aria-hidden="true">
+            <svg viewBox="0 0 400 520" fill="none" stroke="rgba(201,231,10,0.55)" stroke-width="1.2">
+              <rect x="80" y="40" width="240" height="440" rx="2"/>
+              <line x1="80" y1="260" x2="320" y2="260"/>
+              <line x1="200" y1="40" x2="200" y2="480"/>
+              <rect x="120" y="140" width="160" height="240"/>
+              <line x1="120" y1="260" x2="280" y2="260" stroke-width="1.5"/>
+              <line x1="200" y1="140" x2="200" y2="380"/>
+              <path d="M 340 60 Q 200 200 360 440" stroke="rgba(201,231,10,0.8)" stroke-width="2" fill="none" stroke-linecap="round" stroke-dasharray="2 6"/>
+              <circle cx="352" cy="452" r="5" fill="rgba(201,231,10,0.9)"/>
+            </svg>
+          </div>
+          <div style="position:relative;z-index:1">
+            <div class="l-hero-kicker">North Carolina · Est. 2020</div>
+            <h1>WHERE NORTH<br>CAROLINA <em>plays</em><br><span class="accent">TENNIS.</span></h1>
+            <p>Five locations. Six membership tiers. One AI-driven coaching platform built for families, competitors, and everyone in between.</p>
+            <div class="l-hero-ctas">
+              <span class="btn btn-primary">Book a Free Trial →</span>
+              <span class="btn btn-ghost">See Membership Tiers</span>
+            </div>
           </div>
         </div>
         <div class="l-trust">
-          <span>★ USTA-NC partner</span>
-          <span>★ 5 locations</span>
-          <span>★ 200+ active members</span>
-          <span>★ Pickleball + tennis</span>
-          <span>★ Est. 2020</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>USTA-NC Partner</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>5 NC Locations</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>200+ Active Members</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3.5 8.5c5 2 11 2 17 0M3.5 15.5c5-2 11-2 17 0"/></svg>Tennis + Pickleball</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6-6 6 6"/><path d="M12 3v18"/></svg>AI Player Development</span>
         </div>
         <div class="l-programs">
-          <h2>Programs for every player.</h2>
+          <div class="l-programs-head">
+            <div class="eyebrow">The Programs</div>
+            <h2>Built for <em>every</em> player.</h2>
+            <p class="subtitle">From first swings to UTR climbs — a path for juniors, adults, competitors, and families.</p>
+          </div>
           <div class="l-program-grid">
-            <div class="l-program"><div class="ic">🎾</div><h4>YOUTH</h4><p>ROGY through elite</p></div>
-            <div class="l-program"><div class="ic">👥</div><h4>TEAMS</h4><p>Intermediate + Advanced</p></div>
-            <div class="l-program"><div class="ic">☀️</div><h4>CAMPS</h4><p>Summer + track-out</p></div>
-            <div class="l-program"><div class="ic">🏆</div><h4>ACADEMY</h4><p>6 tiers · AI-driven</p></div>
-            <div class="l-program"><div class="ic">🎯</div><h4>PRIVATE</h4><p>Book by coach</p></div>
-            <div class="l-program"><div class="ic">🎸</div><h4>STRINGING</h4><p>24hr turnaround</p></div>
+            <div class="l-program">
+              <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3.5 8.5c5 2 11 2 17 0M3.5 15.5c5-2 11-2 17 0"/></svg></div>
+              <h4>YOUTH</h4><p>ROGY through elite</p>
+            </div>
+            <div class="l-program">
+              <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+              <h4>TEAMS</h4><p>Intermediate · Advanced</p>
+            </div>
+            <div class="l-program">
+              <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg></div>
+              <h4>CAMPS</h4><p>Summer · Track-out</p>
+            </div>
+            <div class="l-program">
+              <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4h12v5a6 6 0 0 1-12 0V4z"/><path d="M4 6H2v2a4 4 0 0 0 4 4"/><path d="M20 6h2v2a4 4 0 0 1-4 4"/><path d="M10 17v3h4v-3"/><path d="M8 22h8"/></svg></div>
+              <h4>ACADEMY</h4><p>6 tiers · AI-driven</p>
+            </div>
+            <div class="l-program">
+              <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/><path d="M12 1v4M12 19v4M1 12h4M19 12h4"/></svg></div>
+              <h4>PRIVATE</h4><p>Book by coach</p>
+            </div>
+            <div class="l-program">
+              <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="9" cy="9" rx="6.5" ry="7"/><path d="M4.5 4.5l9 9M13.5 4.5l-9 9M9 2.5v13M2.5 9h13"/><path d="M14 14l6.5 6.5"/></svg></div>
+              <h4>STRINGING</h4><p>24-hour turnaround</p>
+            </div>
           </div>
         </div>
-        <div style="background:#0a0a0a;color:#fff;padding:64px 48px;text-align:center">
-          <div class="eyebrow" style="color:var(--accent)">Why Big NC</div>
-          <h2 style="color:#fff;margin:16px 0">Three things no one else in NC is doing.</h2>
-          <div class="grid grid-3" style="margin-top:40px;text-align:left">
-            <div class="card dark" style="border-color:#222"><div style="font-family:'Bebas Neue',sans-serif;font-size:44px;color:var(--accent);letter-spacing:.02em">01.</div><h4 style="margin:8px 0">AI Player Development</h4><p style="color:#aaa">Weekly written plans. SmartSwing + SwingVision data. Coach-approved. Visible in your portal.</p></div>
-            <div class="card dark" style="border-color:#222"><div style="font-family:'Bebas Neue',sans-serif;font-size:44px;color:var(--accent);letter-spacing:.02em">02.</div><h4 style="margin:8px 0">Multi-Location Convenience</h4><p style="color:#aaa">5 locations. Whichever is closest. Whichever fits your schedule. One membership.</p></div>
-            <div class="card dark" style="border-color:#222"><div style="font-family:'Bebas Neue',sans-serif;font-size:44px;color:var(--accent);letter-spacing:.02em">03.</div><h4 style="margin:8px 0">Grit · Joy · Craft · Community</h4><p style="color:#aaa">Character + competition. The Big NC Method. Values you can feel on the court.</p></div>
+        <div style="background:#050505;color:#fff;padding:96px 48px;text-align:center;position:relative;overflow:hidden">
+          <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(201,231,10,.08),transparent 60%);pointer-events:none"></div>
+          <div style="position:relative;z-index:1">
+            <div class="eyebrow" style="color:var(--accent);letter-spacing:.3em">Why Big NC</div>
+            <h2 style="color:#fff;margin:16px 0;font-size:clamp(40px,5vw,64px);letter-spacing:.02em;line-height:.95">Three things no one<br>else in NC is doing.</h2>
+            <div class="grid grid-3" style="margin-top:56px;text-align:left;gap:20px">
+              <div style="padding:40px 28px;background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.01));border:1px solid #1a1a1a;border-radius:16px;transition:all .25s cubic-bezier(.2,.8,.2,1);cursor:pointer" onmouseover="this.style.borderColor='var(--accent)';this.style.background='linear-gradient(180deg,rgba(201,231,10,.06),rgba(201,231,10,.01))'" onmouseout="this.style.borderColor='#1a1a1a';this.style.background='linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.01))'">
+                <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:20px"><div style="font-family:'Bebas Neue',sans-serif;font-size:64px;color:var(--accent);letter-spacing:.02em;line-height:.9">01</div><div style="width:36px;height:2px;background:var(--accent)"></div></div>
+                <h4 style="margin:8px 0 12px;color:#fff;font-size:26px;letter-spacing:.03em">AI Player Development</h4>
+                <p style="color:#999;font-size:14px;line-height:1.6">Weekly written plans. SmartSwing + SwingVision data. Coach-approved. Visible in your portal.</p>
+              </div>
+              <div style="padding:40px 28px;background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.01));border:1px solid #1a1a1a;border-radius:16px;transition:all .25s cubic-bezier(.2,.8,.2,1);cursor:pointer" onmouseover="this.style.borderColor='var(--accent)';this.style.background='linear-gradient(180deg,rgba(201,231,10,.06),rgba(201,231,10,.01))'" onmouseout="this.style.borderColor='#1a1a1a';this.style.background='linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.01))'">
+                <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:20px"><div style="font-family:'Bebas Neue',sans-serif;font-size:64px;color:var(--accent);letter-spacing:.02em;line-height:.9">02</div><div style="width:36px;height:2px;background:var(--accent)"></div></div>
+                <h4 style="margin:8px 0 12px;color:#fff;font-size:26px;letter-spacing:.03em">Multi-Location Convenience</h4>
+                <p style="color:#999;font-size:14px;line-height:1.6">5 locations. Whichever is closest. Whichever fits your schedule. One membership.</p>
+              </div>
+              <div style="padding:40px 28px;background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.01));border:1px solid #1a1a1a;border-radius:16px;transition:all .25s cubic-bezier(.2,.8,.2,1);cursor:pointer" onmouseover="this.style.borderColor='var(--accent)';this.style.background='linear-gradient(180deg,rgba(201,231,10,.06),rgba(201,231,10,.01))'" onmouseout="this.style.borderColor='#1a1a1a';this.style.background='linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.01))'">
+                <div style="display:flex;align-items:baseline;gap:12px;margin-bottom:20px"><div style="font-family:'Bebas Neue',sans-serif;font-size:64px;color:var(--accent);letter-spacing:.02em;line-height:.9">03</div><div style="width:36px;height:2px;background:var(--accent)"></div></div>
+                <h4 style="margin:8px 0 12px;color:#fff;font-size:26px;letter-spacing:.03em">Grit · Joy · Craft · Community</h4>
+                <p style="color:#999;font-size:14px;line-height:1.6">Character + competition. The Big NC Method. Values you can feel on the court.</p>
+              </div>
+            </div>
           </div>
         </div>
-        <div style="padding:64px 48px;background:#fff;text-align:center">
-          <div class="eyebrow">Members love it</div>
-          <h2 style="margin:16px 0">"Big NC turned my kid around."</h2>
-          <p style="color:var(--muted);max-width:560px;margin:0 auto 32px">Six testimonials from real parents in the existing site will carry over — plus 2-3 new video testimonials filmed in Phase 1.</p>
-          <div class="grid grid-3" style="text-align:left">
-            <div class="card"><p style="font-style:italic">"Kenzie changed how my daughter approaches every match. Her serve is unrecognizable."</p><p style="margin-top:12px;color:var(--muted);font-size:13px">— Amanda P., Fuquay-Varina</p></div>
-            <div class="card"><p style="font-style:italic">"James pushed my son past his plateau. UTR went from 3.8 to 5.4 in a year."</p><p style="margin-top:12px;color:var(--muted);font-size:13px">— Michael K., Apex</p></div>
-            <div class="card"><p style="font-style:italic">"The AI plan thing is wild. He shows it to me every Sunday. He's proud of tennis now."</p><p style="margin-top:12px;color:var(--muted);font-size:13px">— Elena G., Holly Springs</p></div>
+        <div style="padding:96px 48px;background:#fff;text-align:center">
+          <div class="eyebrow" style="letter-spacing:.3em">Parents · Members · Families</div>
+          <h2 style="margin:16px 0;font-size:clamp(40px,5vw,64px);letter-spacing:.02em;line-height:.95">"Big NC turned<br>my kid <em style="font-style:italic;color:var(--accent-dim);font-family:'Bebas Neue',sans-serif">around</em>."</h2>
+          <p style="color:var(--muted);max-width:560px;margin:0 auto 48px;font-size:15px">Six testimonials from real parents carry over from the existing site — plus 2–3 new video testimonials produced in Phase 1.</p>
+          <div class="grid grid-3" style="text-align:left;gap:20px">
+            <div style="padding:32px 28px;background:#fafafa;border:1px solid var(--border);border-radius:16px;transition:all .25s cubic-bezier(.2,.8,.2,1);cursor:pointer" onmouseover="this.style.background='#fff';this.style.borderColor='#000';this.style.boxShadow='0 12px 40px rgba(0,0,0,.08)'" onmouseout="this.style.background='#fafafa';this.style.borderColor='var(--border)';this.style.boxShadow='none'">
+              <div style="display:flex;gap:2px;margin-bottom:16px" aria-label="5-star rating">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="color:var(--accent-dim)"><path d="M12 2l3 7h7l-5.5 4.5 2 7.5-6.5-4.5L5.5 21l2-7.5L2 9h7z"/></svg>
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="color:var(--accent-dim)"><path d="M12 2l3 7h7l-5.5 4.5 2 7.5-6.5-4.5L5.5 21l2-7.5L2 9h7z"/></svg>
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="color:var(--accent-dim)"><path d="M12 2l3 7h7l-5.5 4.5 2 7.5-6.5-4.5L5.5 21l2-7.5L2 9h7z"/></svg>
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="color:var(--accent-dim)"><path d="M12 2l3 7h7l-5.5 4.5 2 7.5-6.5-4.5L5.5 21l2-7.5L2 9h7z"/></svg>
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="color:var(--accent-dim)"><path d="M12 2l3 7h7l-5.5 4.5 2 7.5-6.5-4.5L5.5 21l2-7.5L2 9h7z"/></svg>
+              </div>
+              <p style="font-size:16px;line-height:1.55;color:#1a1a1a">"Kenzie changed how my daughter approaches every match. Her serve is unrecognizable."</p>
+              <div style="margin-top:20px;display:flex;align-items:center;gap:12px">
+                <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#C9E70A,#8FA800);color:#000;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:.05em">AP</div>
+                <div><div style="font-weight:700;font-size:14px">Amanda P.</div><div style="color:var(--muted);font-size:12px">Parent · Fuquay-Varina</div></div>
+              </div>
+            </div>
+            <div style="padding:32px 28px;background:#fafafa;border:1px solid var(--border);border-radius:16px;transition:all .25s cubic-bezier(.2,.8,.2,1);cursor:pointer" onmouseover="this.style.background='#fff';this.style.borderColor='#000';this.style.boxShadow='0 12px 40px rgba(0,0,0,.08)'" onmouseout="this.style.background='#fafafa';this.style.borderColor='var(--border)';this.style.boxShadow='none'">
+              <div style="display:flex;gap:2px;margin-bottom:16px" aria-label="5-star rating">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="color:var(--accent-dim)"><path d="M12 2l3 7h7l-5.5 4.5 2 7.5-6.5-4.5L5.5 21l2-7.5L2 9h7z"/></svg>
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="color:var(--accent-dim)"><path d="M12 2l3 7h7l-5.5 4.5 2 7.5-6.5-4.5L5.5 21l2-7.5L2 9h7z"/></svg>
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="color:var(--accent-dim)"><path d="M12 2l3 7h7l-5.5 4.5 2 7.5-6.5-4.5L5.5 21l2-7.5L2 9h7z"/></svg>
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="color:var(--accent-dim)"><path d="M12 2l3 7h7l-5.5 4.5 2 7.5-6.5-4.5L5.5 21l2-7.5L2 9h7z"/></svg>
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="color:var(--accent-dim)"><path d="M12 2l3 7h7l-5.5 4.5 2 7.5-6.5-4.5L5.5 21l2-7.5L2 9h7z"/></svg>
+              </div>
+              <p style="font-size:16px;line-height:1.55;color:#1a1a1a">"James pushed my son past his plateau. UTR went from 3.8 to 5.4 in a year."</p>
+              <div style="margin-top:20px;display:flex;align-items:center;gap:12px">
+                <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#C9E70A,#8FA800);color:#000;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:.05em">MK</div>
+                <div><div style="font-weight:700;font-size:14px">Michael K.</div><div style="color:var(--muted);font-size:12px">Parent · Apex</div></div>
+              </div>
+            </div>
+            <div style="padding:32px 28px;background:#fafafa;border:1px solid var(--border);border-radius:16px;transition:all .25s cubic-bezier(.2,.8,.2,1);cursor:pointer" onmouseover="this.style.background='#fff';this.style.borderColor='#000';this.style.boxShadow='0 12px 40px rgba(0,0,0,.08)'" onmouseout="this.style.background='#fafafa';this.style.borderColor='var(--border)';this.style.boxShadow='none'">
+              <div style="display:flex;gap:2px;margin-bottom:16px" aria-label="5-star rating">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="color:var(--accent-dim)"><path d="M12 2l3 7h7l-5.5 4.5 2 7.5-6.5-4.5L5.5 21l2-7.5L2 9h7z"/></svg>
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="color:var(--accent-dim)"><path d="M12 2l3 7h7l-5.5 4.5 2 7.5-6.5-4.5L5.5 21l2-7.5L2 9h7z"/></svg>
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="color:var(--accent-dim)"><path d="M12 2l3 7h7l-5.5 4.5 2 7.5-6.5-4.5L5.5 21l2-7.5L2 9h7z"/></svg>
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="color:var(--accent-dim)"><path d="M12 2l3 7h7l-5.5 4.5 2 7.5-6.5-4.5L5.5 21l2-7.5L2 9h7z"/></svg>
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="color:var(--accent-dim)"><path d="M12 2l3 7h7l-5.5 4.5 2 7.5-6.5-4.5L5.5 21l2-7.5L2 9h7z"/></svg>
+              </div>
+              <p style="font-size:16px;line-height:1.55;color:#1a1a1a">"The AI plan thing is wild. He shows it to me every Sunday. He's proud of tennis now."</p>
+              <div style="margin-top:20px;display:flex;align-items:center;gap:12px">
+                <div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#C9E70A,#8FA800);color:#000;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:.05em">EG</div>
+                <div><div style="font-weight:700;font-size:14px">Elena G.</div><div style="color:var(--muted);font-size:12px">Parent · Holly Springs</div></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
